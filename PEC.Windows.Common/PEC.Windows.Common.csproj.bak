@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\oaisd_app\_Misc\Presentation Builder\EXE\PEC.Windows.Common.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F87E53CD-F1D4-411C-9F9D-32B8E71C2A3D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>PEC.Windows.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>PEC.Windows.Common</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="DevExpress.Utils.v13.2">
+      <HintPath>lib\DevExpress.Utils.v13.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraNavBar.v13.2">
+      <HintPath>lib\DevExpress.XtraNavBar.v13.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v13.2">
+      <HintPath>lib\DevExpress.XtraEditors.v13.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v13.2.Extensions">
+      <HintPath>lib\DevExpress.XtraReports.v13.2.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v13.2">
+      <HintPath>lib\DevExpress.XtraReports.v13.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraBars.v13.2">
+      <HintPath>lib\DevExpress.XtraBars.v13.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraPrinting.v13.2">
+      <HintPath>lib\DevExpress.XtraPrinting.v13.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v13.2.Core">
+      <HintPath>lib\DevExpress.Printing.v13.2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.v13.2">
+      <HintPath>lib\DevExpress.Data.v13.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraGrid.v13.2">
+      <HintPath>lib\DevExpress.XtraGrid.v13.2.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="PEC.Configuration">
+      <HintPath>lib\PEC.Configuration.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClickOnce.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="CommonMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="MAPIEmailer.cs" />
+    <Compile Include="NavigationItemCollection.cs" />
+    <Compile Include="NavigationItem.cs" />
+    <Compile Include="Panes\HomePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PrintRibbonControllerResources.Designer.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="XRDesignRibbonControllerResources.Designer.cs" />
+    <Compile Include="Properties\Resources.Designer.cs" />
+    <Compile Include="Properties\Settings.Designer.cs" />
+    <Compile Include="Panes\BasePane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Panes\HtmlContentSection.cs" />
+    <Compile Include="Dialogs\BaseDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DateRangeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\InputTextDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\OkCancelDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ReportDesign.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ReportDesignerRibbonDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ReportPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ReportPreviewRibbonDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\1SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\2SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\3SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\4SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\5SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\6SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\7SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\8SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\9SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\10SubreportBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ExtensionMethods.GridView.cs" />
+    <Compile Include="Controls\GridContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GridContainerDesigner.cs" />
+    <Compile Include="Controls\HeaderBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ExtensionMethods.LookupEdit.cs" />
+    <Compile Include="Controls\ExtensionMethods.GridColumn.cs" />
+    <Compile Include="MapiMessage.cs" />
+    <Compile Include="MapiFileDesc.cs" />
+    <Compile Include="MapiRecipDesc.cs" />
+    <Compile Include="Patterns\IObserver.cs" />
+    <Compile Include="Patterns\ISubject.cs" />
+    <Compile Include="Panes\HtmlContentSectionCollection.cs" />
+    <Compile Include="Controls\GridType.cs" />
+    <Compile Include="Controls\SidePanelButtonOptions.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CommonMainForm.resx" />
+    <EmbeddedResource Include="Controls\GridContainer.resx" />
+    <EmbeddedResource Include="Controls\HeaderBar.resx" />
+    <EmbeddedResource Include="Dialogs\BaseDialog.resx" />
+    <EmbeddedResource Include="Dialogs\DateRangeDialog.resx" />
+    <EmbeddedResource Include="Dialogs\InputTextDialog.resx" />
+    <EmbeddedResource Include="Dialogs\OkCancelDialog.resx" />
+    <EmbeddedResource Include="Dialogs\ReportPreviewRibbonDialog.resx" />
+    <EmbeddedResource Include="dll.licenses" />
+    <EmbeddedResource Include="HomePane.resx" />
+    <EmbeddedResource Include="PrintRibbonControllerResources.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx" />
+    <EmbeddedResource Include="XRDesignRibbonControllerResources.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PresentationBuilder.Win.MainForm
-// Assembly: PresentationBuilder, Version=1.0.0.28120, Culture=neutral, PublicKeyToken=ed425d74cb6df699
-// MVID: 295F5AD1-A97E-4830-A536-CA2F8525E5B1
-// Assembly location: C:\oaisd_app\_Misc\Presentation Builer\EXE\PresentationBuilder.exe
-
-using DevExpress.LookAndFeel;
+﻿using DevExpress.LookAndFeel;
 using PresentationBuilder.Win.Controls;
 using PresentationBuilder.Win.Dialogs;
 using PresentationBuilder.Win.Properties;
@@ -13,6 +7,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using PresentationBuilder.BLL;
+using System.Threading.Tasks;
 
 namespace PresentationBuilder.Win
 {
@@ -59,80 +55,80 @@ namespace PresentationBuilder.Win
 
     public MainForm()
     {
-      this.InitializeComponent();
+      InitializeComponent();
     }
 
     public MainForm(string startupFile)
     {
-      this.InitializeComponent();
-      this.OpenFile(startupFile);
+      InitializeComponent();
+      OpenFile(startupFile);
     }
 
     private void addButton_Click(object sender, EventArgs e)
     {
-      this.slidePanel.AddSlide();
+      slidePanel.AddSlide();
     }
 
     private void upButton_Click(object sender, EventArgs e)
     {
-      this.slidePanel.MoveSelectedUp();
+      slidePanel.MoveSelectedUp();
     }
 
     private void downButton_Click(object sender, EventArgs e)
     {
-      this.slidePanel.MoveSelectedDown();
+      slidePanel.MoveSelectedDown();
     }
 
     private void songStripButton_Click(object sender, EventArgs e)
     {
       int num = (int) new SongListDialog().ShowDialog();
-      this.slidePanel.ReloadSongs();
+      slidePanel.ReloadSongs();
     }
 
     private void powerpointStripButton_Click(object sender, EventArgs e)
     {
-      this.slidePanel.GeneratePresentation();
+      slidePanel.GeneratePresentation();
     }
 
     private void fontStripButton_Click(object sender, EventArgs e)
     {
       FontListDialog fontListDialog = new FontListDialog();
-      fontListDialog.SongFont = this.slidePanel.SongFont;
-      fontListDialog.IndicatorFont = this.slidePanel.IndicatorFont;
-      fontListDialog.MessageFont = this.slidePanel.MessageFont;
+      fontListDialog.SongFont = slidePanel.SongFont;
+      fontListDialog.IndicatorFont = slidePanel.IndicatorFont;
+      fontListDialog.MessageFont = slidePanel.MessageFont;
       if (fontListDialog.ShowDialog() != DialogResult.OK)
         return;
-      this.slidePanel.SongFont = fontListDialog.SongFont;
-      this.slidePanel.IndicatorFont = fontListDialog.IndicatorFont;
-      this.slidePanel.MessageFont = fontListDialog.MessageFont;
-      this.slidePanel.IsDirty = true;
+      slidePanel.SongFont = fontListDialog.SongFont;
+      slidePanel.IndicatorFont = fontListDialog.IndicatorFont;
+      slidePanel.MessageFont = fontListDialog.MessageFont;
+      slidePanel.IsDirty = true;
     }
 
     private void deleteStripButton_Click(object sender, EventArgs e)
     {
-      if (!this.slidePanel.HasSelectedSlide || MessageBox.Show("Are you sure you want to delete the selected slide?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
+      if (!slidePanel.HasSelectedSlide || MessageBox.Show("Are you sure you want to delete the selected slide?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
         return;
-      this.slidePanel.DeleteSelected();
+      slidePanel.DeleteSelected();
     }
 
     private void insertStripButton_Click(object sender, EventArgs e)
     {
-      this.slidePanel.InsertSlide();
+      slidePanel.InsertSlide();
     }
 
     private void addStripButton_Click(object sender, EventArgs e)
     {
-      this.slidePanel.AddSlide();
+      slidePanel.AddSlide();
     }
 
     private void upStripButton_Click(object sender, EventArgs e)
     {
-      this.slidePanel.MoveSelectedUp();
+      slidePanel.MoveSelectedUp();
     }
 
     private void downStripButton_Click(object sender, EventArgs e)
     {
-      this.slidePanel.MoveSelectedDown();
+      slidePanel.MoveSelectedDown();
     }
 
     private void messagesStripButton_Click(object sender, EventArgs e)
@@ -142,17 +138,17 @@ namespace PresentationBuilder.Win
 
     private void saveStripButton_Click(object sender, EventArgs e)
     {
-      if (!this.slidePanel.CanSave)
+      if (!slidePanel.CanSave)
         return;
-      this.SaveToFile(false);
+      SaveToFile(false);
     }
 
     private bool SaveToFile(bool savingAs)
     {
       bool flag;
-      if (this._fileName != null && !savingAs)
+      if (_fileName != null && !savingAs)
       {
-        this.slidePanel.SaveToFile(this._fileName);
+        slidePanel.SaveToFile(_fileName);
         flag = true;
       }
       else
@@ -162,46 +158,46 @@ namespace PresentationBuilder.Win
         saveFileDialog.DefaultExt = "pbl";
         if (saveFileDialog.ShowDialog() == DialogResult.OK)
         {
-          this.slidePanel.SaveToFile(saveFileDialog.FileName);
-          this._fileName = saveFileDialog.FileName;
+          slidePanel.SaveToFile(saveFileDialog.FileName);
+          _fileName = saveFileDialog.FileName;
           flag = true;
         }
         else
           flag = false;
       }
       if (flag)
-        this.Text = "Presentation Builder - " + Path.GetFileName(this._fileName);
+        Text = "Presentation Builder - " + Path.GetFileName(_fileName);
       return flag;
     }
 
     private void openStripButton_Click(object sender, EventArgs e)
     {
-      if (this.slidePanel.IsDirty && MessageBox.Show("Are you sure you want to loose your changes?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
+      if (slidePanel.IsDirty && MessageBox.Show("Are you sure you want to loose your changes?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
         return;
       OpenFileDialog openFileDialog = new OpenFileDialog();
       openFileDialog.Filter = "Presentation Builder Files (*.pbl) | *.pbl";
       if (openFileDialog.ShowDialog() != DialogResult.OK)
         return;
-      this.OpenFile(openFileDialog.FileName);
+      OpenFile(openFileDialog.FileName);
     }
 
     private void OpenFile(string file)
     {
-      this.SuspendLayout();
-      this.slidePanel.OpenFromFile(file);
-      this.ResumeLayout();
-      this._fileName = file;
-      this.Text = "Presentation Builder - " + Path.GetFileName(file);
+      SuspendLayout();
+      slidePanel.OpenFromFile(file);
+      ResumeLayout();
+      _fileName = file;
+      Text = "Presentation Builder - " + Path.GetFileName(file);
     }
 
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
     {
-      if (!this.slidePanel.IsDirty)
+      if (!slidePanel.IsDirty)
         return;
       switch (MessageBox.Show("Do you want to save your changes?", Application.ProductName, MessageBoxButtons.YesNoCancel))
       {
         case DialogResult.Yes:
-          if (!this.SaveToFile(false))
+          if (!SaveToFile(false))
           {
             e.Cancel = true;
             break;
@@ -216,12 +212,12 @@ namespace PresentationBuilder.Win
     private void newStripButton_Click(object sender, EventArgs e)
     {
       bool flag = false;
-      if (this.slidePanel.IsDirty)
+      if (slidePanel.IsDirty)
       {
         switch (MessageBox.Show("Do you want to save your changes?", Application.ProductName, MessageBoxButtons.YesNoCancel))
         {
           case DialogResult.Yes:
-            if (this.SaveToFile(false))
+            if (SaveToFile(false))
             {
               flag = true;
               break;
@@ -236,400 +232,402 @@ namespace PresentationBuilder.Win
         flag = true;
       if (!flag)
         return;
-      this.slidePanel.Clear();
-      this.Text = "Presentation Builder";
+      slidePanel.Clear();
+      Text = "Presentation Builder";
     }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      MessageBox.Show("Version " + Application.ProductVersion + "\r\n\r\nDeveloped by Ron Oskam\r\nronoskam@gmail.com", Application.ProductName);
+      //var reader = new OneDriveReader();
+      //await reader.Connect(Application.ExecutablePath + "\\PresentationBuilder.Win_TemporaryKey.pfx");
+     MessageBox.Show("Version " + Application.ProductVersion + "\r\n\r\nDeveloped by Ron Oskam\r\nronoskam@gmail.com", Application.ProductName);
     }
 
     private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      this.SaveToFile(true);
+      SaveToFile(true);
     }
 
     protected override void Dispose(bool disposing)
     {
-      if (disposing && this.components != null)
-        this.components.Dispose();
+      if (disposing && components != null)
+        components.Dispose();
       base.Dispose(disposing);
     }
 
     private void InitializeComponent()
     {
-      this.components = new System.ComponentModel.Container();
+      components = new System.ComponentModel.Container();
       PresentationBuilder.BLL.PowerPoint.FontItem fontItem1 = new PresentationBuilder.BLL.PowerPoint.FontItem();
       PresentationBuilder.BLL.PowerPoint.FontItem fontItem2 = new PresentationBuilder.BLL.PowerPoint.FontItem();
       PresentationBuilder.BLL.PowerPoint.FontItem fontItem3 = new PresentationBuilder.BLL.PowerPoint.FontItem();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-      this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-      this.newStripButton = new System.Windows.Forms.ToolStripButton();
-      this.openStripButton = new System.Windows.Forms.ToolStripButton();
-      this.saveStripButton = new System.Windows.Forms.ToolStripButton();
-      this.powerpointStripButton = new System.Windows.Forms.ToolStripButton();
-      this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-      this.addStripButton = new System.Windows.Forms.ToolStripButton();
-      this.insertStripButton = new System.Windows.Forms.ToolStripButton();
-      this.deleteStripButton = new System.Windows.Forms.ToolStripButton();
-      this.upStripButton = new System.Windows.Forms.ToolStripButton();
-      this.downStripButton = new System.Windows.Forms.ToolStripButton();
-      this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-      this.fontStripButton = new System.Windows.Forms.ToolStripButton();
-      this.songStripButton = new System.Windows.Forms.ToolStripButton();
-      this.messagesStripButton = new System.Windows.Forms.ToolStripButton();
-      this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
-      this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-      this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-      this.createInPowerpointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.slideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.insertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.songsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.messagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-      this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.slidePanel = new PresentationBuilder.Win.Controls.SlideListBox();
-      this.toolStrip1.SuspendLayout();
-      this.menuStrip1.SuspendLayout();
-      this.SuspendLayout();
+      toolStrip1 = new System.Windows.Forms.ToolStrip();
+      newStripButton = new System.Windows.Forms.ToolStripButton();
+      openStripButton = new System.Windows.Forms.ToolStripButton();
+      saveStripButton = new System.Windows.Forms.ToolStripButton();
+      powerpointStripButton = new System.Windows.Forms.ToolStripButton();
+      toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+      addStripButton = new System.Windows.Forms.ToolStripButton();
+      insertStripButton = new System.Windows.Forms.ToolStripButton();
+      deleteStripButton = new System.Windows.Forms.ToolStripButton();
+      upStripButton = new System.Windows.Forms.ToolStripButton();
+      downStripButton = new System.Windows.Forms.ToolStripButton();
+      toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+      fontStripButton = new System.Windows.Forms.ToolStripButton();
+      songStripButton = new System.Windows.Forms.ToolStripButton();
+      messagesStripButton = new System.Windows.Forms.ToolStripButton();
+      defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(components);
+      menuStrip1 = new System.Windows.Forms.MenuStrip();
+      fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+      createInPowerpointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      slideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      insertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      songsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      messagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+      aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      slidePanel = new PresentationBuilder.Win.Controls.SlideListBox();
+      toolStrip1.SuspendLayout();
+      menuStrip1.SuspendLayout();
+      SuspendLayout();
       // 
       // toolStrip1
       // 
-      this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newStripButton,
-            this.openStripButton,
-            this.saveStripButton,
-            this.powerpointStripButton,
-            this.toolStripSeparator1,
-            this.addStripButton,
-            this.insertStripButton,
-            this.deleteStripButton,
-            this.upStripButton,
-            this.downStripButton,
-            this.toolStripSeparator2,
-            this.fontStripButton,
-            this.songStripButton,
-            this.messagesStripButton});
-      this.toolStrip1.Location = new System.Drawing.Point(0, 24);
-      this.toolStrip1.Name = "toolStrip1";
-      this.toolStrip1.Size = new System.Drawing.Size(662, 25);
-      this.toolStrip1.TabIndex = 5;
-      this.toolStrip1.Text = "toolStrip1";
+      toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            newStripButton,
+            openStripButton,
+            saveStripButton,
+            powerpointStripButton,
+            toolStripSeparator1,
+            addStripButton,
+            insertStripButton,
+            deleteStripButton,
+            upStripButton,
+            downStripButton,
+            toolStripSeparator2,
+            fontStripButton,
+            songStripButton,
+            messagesStripButton});
+      toolStrip1.Location = new System.Drawing.Point(0, 24);
+      toolStrip1.Name = "toolStrip1";
+      toolStrip1.Size = new System.Drawing.Size(662, 25);
+      toolStrip1.TabIndex = 5;
+      toolStrip1.Text = "toolStrip1";
       // 
       // newStripButton
       // 
-      this.newStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.newStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.New;
-      this.newStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.newStripButton.Name = "newStripButton";
-      this.newStripButton.Size = new System.Drawing.Size(23, 22);
-      this.newStripButton.Text = "toolStripButton2";
-      this.newStripButton.ToolTipText = "Clear Slides";
-      this.newStripButton.Click += new System.EventHandler(this.newStripButton_Click);
+      newStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      newStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.New;
+      newStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      newStripButton.Name = "newStripButton";
+      newStripButton.Size = new System.Drawing.Size(23, 22);
+      newStripButton.Text = "toolStripButton2";
+      newStripButton.ToolTipText = "Clear Slides";
+      newStripButton.Click += new System.EventHandler(newStripButton_Click);
       // 
       // openStripButton
       // 
-      this.openStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.openStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.openfolderHS;
-      this.openStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.openStripButton.Name = "openStripButton";
-      this.openStripButton.Size = new System.Drawing.Size(23, 22);
-      this.openStripButton.Text = "toolStripButton2";
-      this.openStripButton.ToolTipText = "Open File";
-      this.openStripButton.Click += new System.EventHandler(this.openStripButton_Click);
+      openStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      openStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.openfolderHS;
+      openStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      openStripButton.Name = "openStripButton";
+      openStripButton.Size = new System.Drawing.Size(23, 22);
+      openStripButton.Text = "toolStripButton2";
+      openStripButton.ToolTipText = "Open File";
+      openStripButton.Click += new System.EventHandler(openStripButton_Click);
       // 
       // saveStripButton
       // 
-      this.saveStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.saveStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.saveHS;
-      this.saveStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.saveStripButton.Name = "saveStripButton";
-      this.saveStripButton.Size = new System.Drawing.Size(23, 22);
-      this.saveStripButton.Text = "toolStripButton3";
-      this.saveStripButton.ToolTipText = "Save File";
-      this.saveStripButton.Click += new System.EventHandler(this.saveStripButton_Click);
+      saveStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      saveStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.saveHS;
+      saveStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      saveStripButton.Name = "saveStripButton";
+      saveStripButton.Size = new System.Drawing.Size(23, 22);
+      saveStripButton.Text = "toolStripButton3";
+      saveStripButton.ToolTipText = "Save File";
+      saveStripButton.Click += new System.EventHandler(saveStripButton_Click);
       // 
       // powerpointStripButton
       // 
-      this.powerpointStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.powerpointStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Build;
-      this.powerpointStripButton.ImageTransparentColor = System.Drawing.Color.White;
-      this.powerpointStripButton.Name = "powerpointStripButton";
-      this.powerpointStripButton.Size = new System.Drawing.Size(23, 22);
-      this.powerpointStripButton.Text = "toolStripButton6";
-      this.powerpointStripButton.ToolTipText = "Create in Powerpoint";
-      this.powerpointStripButton.Click += new System.EventHandler(this.powerpointStripButton_Click);
+      powerpointStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      powerpointStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Build;
+      powerpointStripButton.ImageTransparentColor = System.Drawing.Color.White;
+      powerpointStripButton.Name = "powerpointStripButton";
+      powerpointStripButton.Size = new System.Drawing.Size(23, 22);
+      powerpointStripButton.Text = "toolStripButton6";
+      powerpointStripButton.ToolTipText = "Create in Powerpoint";
+      powerpointStripButton.Click += new System.EventHandler(powerpointStripButton_Click);
       // 
       // toolStripSeparator1
       // 
-      this.toolStripSeparator1.Name = "toolStripSeparator1";
-      this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+      toolStripSeparator1.Name = "toolStripSeparator1";
+      toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
       // 
       // addStripButton
       // 
-      this.addStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.addStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Add;
-      this.addStripButton.ImageTransparentColor = System.Drawing.Color.White;
-      this.addStripButton.Name = "addStripButton";
-      this.addStripButton.Size = new System.Drawing.Size(23, 22);
-      this.addStripButton.Text = "Add Slide";
-      this.addStripButton.Click += new System.EventHandler(this.addStripButton_Click);
+      addStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      addStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Add;
+      addStripButton.ImageTransparentColor = System.Drawing.Color.White;
+      addStripButton.Name = "addStripButton";
+      addStripButton.Size = new System.Drawing.Size(23, 22);
+      addStripButton.Text = "Add Slide";
+      addStripButton.Click += new System.EventHandler(addStripButton_Click);
       // 
       // insertStripButton
       // 
-      this.insertStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.insertStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Insert;
-      this.insertStripButton.ImageTransparentColor = System.Drawing.Color.White;
-      this.insertStripButton.Name = "insertStripButton";
-      this.insertStripButton.Size = new System.Drawing.Size(23, 22);
-      this.insertStripButton.Text = "toolStripButton5";
-      this.insertStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-      this.insertStripButton.ToolTipText = "Insert Slide";
-      this.insertStripButton.Click += new System.EventHandler(this.insertStripButton_Click);
+      insertStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      insertStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Insert;
+      insertStripButton.ImageTransparentColor = System.Drawing.Color.White;
+      insertStripButton.Name = "insertStripButton";
+      insertStripButton.Size = new System.Drawing.Size(23, 22);
+      insertStripButton.Text = "toolStripButton5";
+      insertStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+      insertStripButton.ToolTipText = "Insert Slide";
+      insertStripButton.Click += new System.EventHandler(insertStripButton_Click);
       // 
       // deleteStripButton
       // 
-      this.deleteStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.deleteStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.DeleteHS;
-      this.deleteStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.deleteStripButton.Name = "deleteStripButton";
-      this.deleteStripButton.Size = new System.Drawing.Size(23, 22);
-      this.deleteStripButton.Text = "toolStripButton1";
-      this.deleteStripButton.ToolTipText = "Delete Slide";
-      this.deleteStripButton.Click += new System.EventHandler(this.deleteStripButton_Click);
+      deleteStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      deleteStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.DeleteHS;
+      deleteStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      deleteStripButton.Name = "deleteStripButton";
+      deleteStripButton.Size = new System.Drawing.Size(23, 22);
+      deleteStripButton.Text = "toolStripButton1";
+      deleteStripButton.ToolTipText = "Delete Slide";
+      deleteStripButton.Click += new System.EventHandler(deleteStripButton_Click);
       // 
       // upStripButton
       // 
-      this.upStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.upStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.MoveUp;
-      this.upStripButton.ImageTransparentColor = System.Drawing.Color.White;
-      this.upStripButton.Name = "upStripButton";
-      this.upStripButton.Size = new System.Drawing.Size(23, 22);
-      this.upStripButton.Text = "toolStripButton7";
-      this.upStripButton.ToolTipText = "Move Slide Up";
-      this.upStripButton.Click += new System.EventHandler(this.upStripButton_Click);
+      upStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      upStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.MoveUp;
+      upStripButton.ImageTransparentColor = System.Drawing.Color.White;
+      upStripButton.Name = "upStripButton";
+      upStripButton.Size = new System.Drawing.Size(23, 22);
+      upStripButton.Text = "toolStripButton7";
+      upStripButton.ToolTipText = "Move Slide Up";
+      upStripButton.Click += new System.EventHandler(upStripButton_Click);
       // 
       // downStripButton
       // 
-      this.downStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.downStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.MoveDown;
-      this.downStripButton.ImageTransparentColor = System.Drawing.Color.White;
-      this.downStripButton.Name = "downStripButton";
-      this.downStripButton.Size = new System.Drawing.Size(23, 22);
-      this.downStripButton.Text = "toolStripButton8";
-      this.downStripButton.ToolTipText = "Move Slide Down";
-      this.downStripButton.Click += new System.EventHandler(this.downStripButton_Click);
+      downStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      downStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.MoveDown;
+      downStripButton.ImageTransparentColor = System.Drawing.Color.White;
+      downStripButton.Name = "downStripButton";
+      downStripButton.Size = new System.Drawing.Size(23, 22);
+      downStripButton.Text = "toolStripButton8";
+      downStripButton.ToolTipText = "Move Slide Down";
+      downStripButton.Click += new System.EventHandler(downStripButton_Click);
       // 
       // toolStripSeparator2
       // 
-      this.toolStripSeparator2.Name = "toolStripSeparator2";
-      this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+      toolStripSeparator2.Name = "toolStripSeparator2";
+      toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
       // 
       // fontStripButton
       // 
-      this.fontStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.fontStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.FontDialogHS;
-      this.fontStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.fontStripButton.Name = "fontStripButton";
-      this.fontStripButton.Size = new System.Drawing.Size(23, 22);
-      this.fontStripButton.Text = "toolStripButton10";
-      this.fontStripButton.ToolTipText = "Slide Font";
-      this.fontStripButton.Click += new System.EventHandler(this.fontStripButton_Click);
+      fontStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      fontStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.FontDialogHS;
+      fontStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      fontStripButton.Name = "fontStripButton";
+      fontStripButton.Size = new System.Drawing.Size(23, 22);
+      fontStripButton.Text = "toolStripButton10";
+      fontStripButton.ToolTipText = "Slide Font";
+      fontStripButton.Click += new System.EventHandler(fontStripButton_Click);
       // 
       // songStripButton
       // 
-      this.songStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.songStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Note;
-      this.songStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.songStripButton.Name = "songStripButton";
-      this.songStripButton.Size = new System.Drawing.Size(23, 22);
-      this.songStripButton.Text = "toolStripButton9";
-      this.songStripButton.ToolTipText = "Edit Songs";
-      this.songStripButton.Click += new System.EventHandler(this.songStripButton_Click);
+      songStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      songStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Note;
+      songStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      songStripButton.Name = "songStripButton";
+      songStripButton.Size = new System.Drawing.Size(23, 22);
+      songStripButton.Text = "toolStripButton9";
+      songStripButton.ToolTipText = "Edit Songs";
+      songStripButton.Click += new System.EventHandler(songStripButton_Click);
       // 
       // messagesStripButton
       // 
-      this.messagesStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.messagesStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Book_angleHS;
-      this.messagesStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.messagesStripButton.Name = "messagesStripButton";
-      this.messagesStripButton.Size = new System.Drawing.Size(23, 22);
-      this.messagesStripButton.Text = "toolStripButton11";
-      this.messagesStripButton.ToolTipText = "Edit Messages";
-      this.messagesStripButton.Click += new System.EventHandler(this.messagesStripButton_Click);
+      messagesStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      messagesStripButton.Image = global::PresentationBuilder.Win.Properties.Resources.Book_angleHS;
+      messagesStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      messagesStripButton.Name = "messagesStripButton";
+      messagesStripButton.Size = new System.Drawing.Size(23, 22);
+      messagesStripButton.Text = "toolStripButton11";
+      messagesStripButton.ToolTipText = "Edit Messages";
+      messagesStripButton.Click += new System.EventHandler(messagesStripButton_Click);
       // 
       // defaultLookAndFeel1
       // 
-      this.defaultLookAndFeel1.LookAndFeel.UseWindowsXPTheme = true;
+      defaultLookAndFeel1.LookAndFeel.UseWindowsXPTheme = true;
       // 
       // menuStrip1
       // 
-      this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.slideToolStripMenuItem,
-            this.toolsToolStripMenuItem});
-      this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-      this.menuStrip1.Name = "menuStrip1";
-      this.menuStrip1.Size = new System.Drawing.Size(662, 24);
-      this.menuStrip1.TabIndex = 8;
-      this.menuStrip1.Text = "menuStrip1";
+      menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            fileToolStripMenuItem,
+            slideToolStripMenuItem,
+            toolsToolStripMenuItem});
+      menuStrip1.Location = new System.Drawing.Point(0, 0);
+      menuStrip1.Name = "menuStrip1";
+      menuStrip1.Size = new System.Drawing.Size(662, 24);
+      menuStrip1.TabIndex = 8;
+      menuStrip1.Text = "menuStrip1";
       // 
       // fileToolStripMenuItem
       // 
-      this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem,
-            this.openToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.createInPowerpointToolStripMenuItem});
-      this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-      this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-      this.fileToolStripMenuItem.Text = "&File";
+      fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            newToolStripMenuItem,
+            openToolStripMenuItem,
+            saveToolStripMenuItem,
+            saveAsToolStripMenuItem,
+            toolStripMenuItem1,
+            createInPowerpointToolStripMenuItem});
+      fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+      fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+      fileToolStripMenuItem.Text = "&File";
       // 
       // newToolStripMenuItem
       // 
-      this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-      this.newToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-      this.newToolStripMenuItem.Text = "&New";
-      this.newToolStripMenuItem.Click += new System.EventHandler(this.newStripButton_Click);
+      newToolStripMenuItem.Name = "newToolStripMenuItem";
+      newToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+      newToolStripMenuItem.Text = "&New";
+      newToolStripMenuItem.Click += new System.EventHandler(newStripButton_Click);
       // 
       // openToolStripMenuItem
       // 
-      this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-      this.openToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-      this.openToolStripMenuItem.Text = "&Open...";
-      this.openToolStripMenuItem.Click += new System.EventHandler(this.openStripButton_Click);
+      openToolStripMenuItem.Name = "openToolStripMenuItem";
+      openToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+      openToolStripMenuItem.Text = "&Open...";
+      openToolStripMenuItem.Click += new System.EventHandler(openStripButton_Click);
       // 
       // saveToolStripMenuItem
       // 
-      this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-      this.saveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-      this.saveToolStripMenuItem.Text = "&Save";
-      this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveStripButton_Click);
+      saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+      saveToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+      saveToolStripMenuItem.Text = "&Save";
+      saveToolStripMenuItem.Click += new System.EventHandler(saveStripButton_Click);
       // 
       // saveAsToolStripMenuItem
       // 
-      this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-      this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-      this.saveAsToolStripMenuItem.Text = "&Save As...";
-      this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+      saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+      saveAsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+      saveAsToolStripMenuItem.Text = "&Save As...";
+      saveAsToolStripMenuItem.Click += new System.EventHandler(saveAsToolStripMenuItem_Click);
       // 
       // toolStripMenuItem1
       // 
-      this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-      this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 6);
+      toolStripMenuItem1.Name = "toolStripMenuItem1";
+      toolStripMenuItem1.Size = new System.Drawing.Size(182, 6);
       // 
       // createInPowerpointToolStripMenuItem
       // 
-      this.createInPowerpointToolStripMenuItem.Name = "createInPowerpointToolStripMenuItem";
-      this.createInPowerpointToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-      this.createInPowerpointToolStripMenuItem.Text = "&Create in Powerpoint";
-      this.createInPowerpointToolStripMenuItem.Click += new System.EventHandler(this.powerpointStripButton_Click);
+      createInPowerpointToolStripMenuItem.Name = "createInPowerpointToolStripMenuItem";
+      createInPowerpointToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+      createInPowerpointToolStripMenuItem.Text = "&Create in Powerpoint";
+      createInPowerpointToolStripMenuItem.Click += new System.EventHandler(powerpointStripButton_Click);
       // 
       // slideToolStripMenuItem
       // 
-      this.slideToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem,
-            this.insertToolStripMenuItem,
-            this.deleteToolStripMenuItem,
-            this.moveUpToolStripMenuItem,
-            this.moveDownToolStripMenuItem});
-      this.slideToolStripMenuItem.Name = "slideToolStripMenuItem";
-      this.slideToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-      this.slideToolStripMenuItem.Text = "&Slide";
+      slideToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            addToolStripMenuItem,
+            insertToolStripMenuItem,
+            deleteToolStripMenuItem,
+            moveUpToolStripMenuItem,
+            moveDownToolStripMenuItem});
+      slideToolStripMenuItem.Name = "slideToolStripMenuItem";
+      slideToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+      slideToolStripMenuItem.Text = "&Slide";
       // 
       // addToolStripMenuItem
       // 
-      this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-      this.addToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-      this.addToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-      this.addToolStripMenuItem.Text = "&Add";
-      this.addToolStripMenuItem.Click += new System.EventHandler(this.addStripButton_Click);
+      addToolStripMenuItem.Name = "addToolStripMenuItem";
+      addToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+      addToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+      addToolStripMenuItem.Text = "&Add";
+      addToolStripMenuItem.Click += new System.EventHandler(addStripButton_Click);
       // 
       // insertToolStripMenuItem
       // 
-      this.insertToolStripMenuItem.Name = "insertToolStripMenuItem";
-      this.insertToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-      this.insertToolStripMenuItem.Text = "&Insert";
-      this.insertToolStripMenuItem.Click += new System.EventHandler(this.insertStripButton_Click);
+      insertToolStripMenuItem.Name = "insertToolStripMenuItem";
+      insertToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+      insertToolStripMenuItem.Text = "&Insert";
+      insertToolStripMenuItem.Click += new System.EventHandler(insertStripButton_Click);
       // 
       // deleteToolStripMenuItem
       // 
-      this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-      this.deleteToolStripMenuItem.Text = "&Delete";
-      this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteStripButton_Click);
+      deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+      deleteToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+      deleteToolStripMenuItem.Text = "&Delete";
+      deleteToolStripMenuItem.Click += new System.EventHandler(deleteStripButton_Click);
       // 
       // moveUpToolStripMenuItem
       // 
-      this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-      this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-      this.moveUpToolStripMenuItem.Text = "Move &Up";
-      this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.upStripButton_Click);
+      moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
+      moveUpToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+      moveUpToolStripMenuItem.Text = "Move &Up";
+      moveUpToolStripMenuItem.Click += new System.EventHandler(upStripButton_Click);
       // 
       // moveDownToolStripMenuItem
       // 
-      this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-      this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-      this.moveDownToolStripMenuItem.Text = "Move &Down";
-      this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.downStripButton_Click);
+      moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
+      moveDownToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+      moveDownToolStripMenuItem.Text = "Move &Down";
+      moveDownToolStripMenuItem.Click += new System.EventHandler(downStripButton_Click);
       // 
       // toolsToolStripMenuItem
       // 
-      this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.songsToolStripMenuItem,
-            this.messagesToolStripMenuItem,
-            this.toolStripMenuItem2,
-            this.aboutToolStripMenuItem});
-      this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-      this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-      this.toolsToolStripMenuItem.Text = "&Tools";
+      toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            songsToolStripMenuItem,
+            messagesToolStripMenuItem,
+            toolStripMenuItem2,
+            aboutToolStripMenuItem});
+      toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+      toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+      toolsToolStripMenuItem.Text = "&Tools";
       // 
       // songsToolStripMenuItem
       // 
-      this.songsToolStripMenuItem.Name = "songsToolStripMenuItem";
-      this.songsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-      this.songsToolStripMenuItem.Text = "&Songs...";
-      this.songsToolStripMenuItem.Click += new System.EventHandler(this.songStripButton_Click);
+      songsToolStripMenuItem.Name = "songsToolStripMenuItem";
+      songsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+      songsToolStripMenuItem.Text = "&Songs...";
+      songsToolStripMenuItem.Click += new System.EventHandler(songStripButton_Click);
       // 
       // messagesToolStripMenuItem
       // 
-      this.messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
-      this.messagesToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-      this.messagesToolStripMenuItem.Text = "&Messages...";
-      this.messagesToolStripMenuItem.Click += new System.EventHandler(this.messagesStripButton_Click);
+      messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
+      messagesToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+      messagesToolStripMenuItem.Text = "&Messages...";
+      messagesToolStripMenuItem.Click += new System.EventHandler(messagesStripButton_Click);
       // 
       // toolStripMenuItem2
       // 
-      this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-      this.toolStripMenuItem2.Size = new System.Drawing.Size(131, 6);
+      toolStripMenuItem2.Name = "toolStripMenuItem2";
+      toolStripMenuItem2.Size = new System.Drawing.Size(131, 6);
       // 
       // aboutToolStripMenuItem
       // 
-      this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-      this.aboutToolStripMenuItem.Text = "&About...";
-      this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+      aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+      aboutToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+      aboutToolStripMenuItem.Text = "&About...";
+      aboutToolStripMenuItem.Click += new System.EventHandler(aboutToolStripMenuItem_Click);
       // 
       // slidePanel
       // 
-      this.slidePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      slidePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.slidePanel.AutoScroll = true;
-      this.slidePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      slidePanel.AutoScroll = true;
+      slidePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       fontItem1.Bold = true;
       fontItem1.FontColor = System.Drawing.Color.Black;
       fontItem1.FontName = "Arial";
@@ -638,9 +636,9 @@ namespace PresentationBuilder.Win
       fontItem1.Shadow = false;
       fontItem1.Size = 32F;
       fontItem1.Underline = false;
-      this.slidePanel.IndicatorFont = fontItem1;
-      this.slidePanel.IsDirty = false;
-      this.slidePanel.Location = new System.Drawing.Point(7, 52);
+      slidePanel.IndicatorFont = fontItem1;
+      slidePanel.IsDirty = false;
+      slidePanel.Location = new System.Drawing.Point(7, 52);
       fontItem2.Bold = true;
       fontItem2.FontColor = System.Drawing.Color.Black;
       fontItem2.FontName = "Arial";
@@ -649,9 +647,9 @@ namespace PresentationBuilder.Win
       fontItem2.Shadow = false;
       fontItem2.Size = 32F;
       fontItem2.Underline = false;
-      this.slidePanel.MessageFont = fontItem2;
-      this.slidePanel.Name = "slidePanel";
-      this.slidePanel.Size = new System.Drawing.Size(649, 415);
+      slidePanel.MessageFont = fontItem2;
+      slidePanel.Name = "slidePanel";
+      slidePanel.Size = new System.Drawing.Size(649, 415);
       fontItem3.Bold = true;
       fontItem3.FontColor = System.Drawing.Color.Black;
       fontItem3.FontName = "Arial";
@@ -660,27 +658,27 @@ namespace PresentationBuilder.Win
       fontItem3.Shadow = false;
       fontItem3.Size = 32F;
       fontItem3.Underline = false;
-      this.slidePanel.SongFont = fontItem3;
-      this.slidePanel.TabIndex = 3;
+      slidePanel.SongFont = fontItem3;
+      slidePanel.TabIndex = 3;
       // 
       // MainForm
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(662, 470);
-      this.Controls.Add(this.toolStrip1);
-      this.Controls.Add(this.slidePanel);
-      this.Controls.Add(this.menuStrip1);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Name = "MainForm";
-      this.Text = "Presentation Builder";
-      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-      this.toolStrip1.ResumeLayout(false);
-      this.toolStrip1.PerformLayout();
-      this.menuStrip1.ResumeLayout(false);
-      this.menuStrip1.PerformLayout();
-      this.ResumeLayout(false);
-      this.PerformLayout();
+      AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      ClientSize = new System.Drawing.Size(662, 470);
+      Controls.Add(toolStrip1);
+      Controls.Add(slidePanel);
+      Controls.Add(menuStrip1);
+      Icon = ((System.Drawing.Icon)(resources.GetObject("$Icon")));
+      Name = "MainForm";
+      Text = "Presentation Builder";
+      FormClosing += new System.Windows.Forms.FormClosingEventHandler(MainForm_FormClosing);
+      toolStrip1.ResumeLayout(false);
+      toolStrip1.PerformLayout();
+      menuStrip1.ResumeLayout(false);
+      menuStrip1.PerformLayout();
+      ResumeLayout(false);
+      PerformLayout();
 
     }
   }

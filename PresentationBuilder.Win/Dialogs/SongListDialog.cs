@@ -82,7 +82,7 @@ namespace PresentationBuilder.Win.Dialogs
       if (songEditDialog.ShowDialog() != DialogResult.Cancel)
       {
         DataSource.ResetBook((Book) this.bookLookup.EditValue);
-        this.bookLookup_EditValueChanged((object) null, EventArgs.Empty);
+        this.bookLookup_EditValueChanged(null, EventArgs.Empty);
       }
     }
 
@@ -101,7 +101,7 @@ namespace PresentationBuilder.Win.Dialogs
       {
         DataSource.ResetBook(selectedSong.Book);
         if (this.bookLookup.EditValue != null && ((Book) this.bookLookup.EditValue).BookID == selectedSong.Book.BookID)
-          this.bookLookup_EditValueChanged((object) null, EventArgs.Empty);
+          this.bookLookup_EditValueChanged(null, EventArgs.Empty);
       }
     }
 

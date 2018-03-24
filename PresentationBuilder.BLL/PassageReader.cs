@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PresentationBuilder.BLL.PassageReader
-// Assembly: PresentationBuilder.BLL, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed425d74cb6df699
-// MVID: 3C38E67D-5DE8-463E-9D0A-ECF8F27A6106
-// Assembly location: C:\oaisd_app\_Misc\Presentation Builer\EXE\PresentationBuilder.BLL.dll
-
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
@@ -41,7 +35,7 @@ namespace PresentationBuilder.BLL
       stringBuilder2.Append(streamReader.ReadToEnd());
       streamReader.Close();
       string str = stringBuilder2.ToString();
-      if ((uint) str.IndexOf(']') > 0U)
+      if (str.IndexOf(']') > 0)
         str = str.Substring(str.IndexOf(']') + 1);
       return str + "\r\n\r\n" + verses;
     }

@@ -12,7 +12,7 @@ namespace PresentationBuilder.BLL
     {
     public bool ValidNumber()
     {
-      return Queryable.FirstOrDefault<Song>(Queryable.Where<Song>(DataSource.GetSongs(), (Expression<Func<Song, bool>>)(s => s.SongID != this.SongID && s.Book.BookID == this.Book.BookID && (int)s.Number == (int)this.Number))) == null;
+      return Queryable.FirstOrDefault(Queryable.Where(DataSource.GetSongs(), s => s.SongID != this.SongID && s.Book.BookID == this.Book.BookID && s.Number == (int)this.Number)) == null;
     }
 
     public void WriteToXML(XmlWriter writer)
@@ -30,5 +30,14 @@ namespace PresentationBuilder.BLL
         writer.WriteEndElement();
       }
     }
+
+    public List<Verse> VerseList
+    {
+      get
+      {
+        return Verses.ToList();
+      }
+    }
+
   }
 }

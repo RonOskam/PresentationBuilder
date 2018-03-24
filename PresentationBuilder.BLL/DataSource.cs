@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PresentationBuilder.BLL.DataSource
-// Assembly: PresentationBuilder.BLL, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed425d74cb6df699
-// MVID: 3C38E67D-5DE8-463E-9D0A-ECF8F27A6106
-// Assembly location: C:\oaisd_app\_Misc\Presentation Builer\EXE\PresentationBuilder.BLL.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -76,17 +70,18 @@ namespace PresentationBuilder.BLL
 
     public static IQueryable<Song> GetSongs()
     {
-      return (IQueryable<Song>) PresentationBuilderEntities.Context.Songs;
+      return PresentationBuilderEntities.Context.Songs;
     }
 
     public static Song GetSong(PresentationBuilderEntities context, int songId)
     {
-      return Queryable.FirstOrDefault<Song>(Queryable.Where<Song>((IQueryable<Song>) context.Songs.Include("Verses").Include("Book"), (Expression<Func<Song, bool>>) (s => s.SongID == songId)));
+      return context.Songs.Include("Verses").Include("Book").FirstOrDefault(s => s.SongID == songId);
+      //return Queryable.FirstOrDefault(Queryable.Where(context.Songs.Include("Verses").Include("Book"), s => s.SongID == songId));
     }
 
     public static Book GetBookBySong(int songId)
     {
-      return Queryable.FirstOrDefault<Book>(Queryable.Select<Song, Book>(Queryable.Where<Song>((IQueryable<Song>) PresentationBuilderEntities.Context.Songs, (Expression<Func<Song, bool>>) (s => s.SongID == songId)), (Expression<Func<Song, Book>>) (s => s.Book)));
+      return Queryable.FirstOrDefault(Queryable.Select(Queryable.Where(PresentationBuilderEntities.Context.Songs, s => s.SongID == songId), s => s.Book));
     }
 
     public static void AddSong(Song song)

@@ -38,9 +38,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Identity.Client, Version=1.1.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Identity.Client.1.1.0-preview\lib\net45\Microsoft.Identity.Client.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -103,7 +100,6 @@
     <Compile Include="PowerPoint\SlidePresentation.cs" />
     <Compile Include="PowerPoint\SongSlide.cs" />
     <Compile Include="PowerPoint\SlideItem.cs" />
-    <Compile Include="PowerPoint\SlideType.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Verse.cs">
       <DependentUpon>PresentationBuilderEntities.tt</DependentUpon>

@@ -82,13 +82,13 @@ namespace PresentationBuilder.Win.Dialogs
 
     private void addButton_Click(object sender, EventArgs e)
     {
-      Song song = (Song)songBindingSource.Current;
-      Verse entity = new Verse();
+      var song = (Song)songBindingSource.Current;
+      var entity = new Verse();
       if (song.Verses.Count == 0)      
         entity.VerseNumber = 1;      
       else
       {
-        entity.VerseNumber = Enumerable.Max(song.Verses, v => v.VerseNumber);
+        entity.VerseNumber = song.Verses.Max(v => v.VerseNumber);
         ++entity.VerseNumber;
       }
       song.Verses.Add(entity);

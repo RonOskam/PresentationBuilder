@@ -11,11 +11,11 @@ namespace PresentationBuilder.Win.Controls
 {
   public class SlideListBox : Panel
   {
-    private SlideControl _focusControl = (SlideControl) null;
-    private FontItem _songFont = (FontItem) null;
-    private FontItem _indicatorFont = (FontItem) null;
-    private FontItem _messageFont = (FontItem) null;
-    private IContainer components = (IContainer) null;
+    private SlideControl _focusControl = null;
+    private FontItem _songFont = null;
+    private FontItem _indicatorFont = null;
+    private FontItem _messageFont = null;
+    private IContainer components = null;
 
     public bool IsDirty { get; set; }
 
@@ -23,16 +23,16 @@ namespace PresentationBuilder.Win.Controls
     {
       get
       {
-        if (this._songFont == null)
+        if (_songFont == null)
         {
-          this._songFont = new FontItem();
-          this._songFont.LoadFont("SongFont");
+          _songFont = new FontItem();
+          _songFont.LoadFont("SongFont");
         }
-        return this._songFont;
+        return _songFont;
       }
       set
       {
-        this._songFont = value;
+        _songFont = value;
       }
     }
 
@@ -40,16 +40,16 @@ namespace PresentationBuilder.Win.Controls
     {
       get
       {
-        if (this._indicatorFont == null)
+        if (_indicatorFont == null)
         {
-          this._indicatorFont = new FontItem();
-          this._indicatorFont.LoadFont("IndicatorFont");
+          _indicatorFont = new FontItem();
+          _indicatorFont.LoadFont("IndicatorFont");
         }
-        return this._indicatorFont;
+        return _indicatorFont;
       }
       set
       {
-        this._indicatorFont = value;
+        _indicatorFont = value;
       }
     }
 
@@ -57,16 +57,16 @@ namespace PresentationBuilder.Win.Controls
     {
       get
       {
-        if (this._messageFont == null)
+        if (_messageFont == null)
         {
-          this._messageFont = new FontItem();
-          this._messageFont.LoadFont("MessageFont");
+          _messageFont = new FontItem();
+          _messageFont.LoadFont("MessageFont");
         }
-        return this._messageFont;
+        return _messageFont;
       }
       set
       {
-        this._messageFont = value;
+        _messageFont = value;
       }
     }
 
@@ -74,7 +74,7 @@ namespace PresentationBuilder.Win.Controls
     {
       get
       {
-        return this._focusControl != null;
+        return _focusControl != null;
       }
     }
 
@@ -82,18 +82,18 @@ namespace PresentationBuilder.Win.Controls
     {
       get
       {
-        return (uint) this.Controls.Count > 0U;
+        return (uint) Controls.Count > 0U;
       }
     }
 
     public SlideListBox()
     {
-      this.InitializeComponent();
+      InitializeComponent();
     }
 
     public void ReloadSongs()
     {
-      foreach (object obj in (ArrangedElementCollection) this.Controls)
+      foreach (object obj in (ArrangedElementCollection) Controls)
       {
         if (obj is SlideControl)
           ((SlideControl) obj).UpdateSongList();
@@ -102,55 +102,55 @@ namespace PresentationBuilder.Win.Controls
 
     public void AddSlide()
     {
-      SlideControl slide = this.CreateSlide();
-      this.Controls.SetChildIndex((Control) slide, 0);
-      this.SetFocusControl(slide);
+      SlideControl slide = CreateSlide();
+      Controls.SetChildIndex((Control) slide, 0);
+      SetFocusControl(slide);
     }
 
     public void Clear()
     {
-      this.Controls.Clear();
-      this.IsDirty = false;
+      Controls.Clear();
+      IsDirty = false;
     }
 
     private SlideControl CreateSlide()
     {
-      this.IsDirty = true;
+      IsDirty = true;
       SlideControl slideControl = new SlideControl();
       slideControl.ParentBox = this;
       slideControl.Dock = DockStyle.Top;
-      this.Controls.Add((Control) slideControl);
+      Controls.Add((Control) slideControl);
       slideControl.typeLookup.Focus();
-      slideControl.Changed += new SlideControl.ChangedEventHandler(this.slide_Changed);
+      slideControl.Changed += new SlideControl.ChangedEventHandler(slide_Changed);
       return slideControl;
     }
 
     private void slide_Changed(object sender, EventArgs e)
     {
-      this.IsDirty = true;
+      IsDirty = true;
     }
 
     public void GeneratePresentation()
     {
-      if (!this.Validate())
+      if (!Validate())
         return;
       SlidePresentation slidePresentation = new SlidePresentation();
-      slidePresentation.SongFont = this.SongFont;
-      slidePresentation.IndicatorFont = this.IndicatorFont;
-      slidePresentation.MessageFont = this.MessageFont;
-      for (int index = this.Controls.Count - 1; index >= 0; --index)
-        slidePresentation.AddSlide(((SlideControl) this.Controls[index]).CreateSlide());
+      slidePresentation.SongFont = SongFont;
+      slidePresentation.IndicatorFont = IndicatorFont;
+      slidePresentation.MessageFont = MessageFont;
+      for (int index = Controls.Count - 1; index >= 0; --index)
+        slidePresentation.AddSlide(((SlideControl) Controls[index]).CreateSlide());
       slidePresentation.Generate();
     }
 
     private bool Validate()
     {
-      foreach (object obj in (ArrangedElementCollection) this.Controls)
+      foreach (object obj in (ArrangedElementCollection) Controls)
       {
         string text = ((SlideControl) obj).CreateSlide().Validate();
         if (text != null)
         {
-          this.SetFocusControl((SlideControl) obj);
+          SetFocusControl((SlideControl) obj);
           int num = (int) MessageBox.Show(text, Application.ProductName);
           return false;
         }
@@ -160,53 +160,53 @@ namespace PresentationBuilder.Win.Controls
 
     internal void SetFocusControl(SlideControl slide)
     {
-      if (this._focusControl != null)
-        this._focusControl.LostFocus();
-      this._focusControl = slide;
+      if (_focusControl != null)
+        _focusControl.LostFocus();
+      _focusControl = slide;
       slide.GotFocus();
-      Point point = this.ScrollToControl((Control) slide);
-      this.SetDisplayRectLocation(point.X, point.Y);
+      Point point = ScrollToControl((Control) slide);
+      SetDisplayRectLocation(point.X, point.Y);
     }
 
     public void InsertSlide()
     {
-      SlideControl slide = this.CreateSlide();
+      SlideControl slide = CreateSlide();
       int num = 0;
-      if (this._focusControl != null)
-        num = this.Controls.IndexOf((Control) this._focusControl);
-      this.Controls.SetChildIndex((Control) slide, num + 1);
-      this.SetFocusControl(slide);
+      if (_focusControl != null)
+        num = Controls.IndexOf((Control) _focusControl);
+      Controls.SetChildIndex((Control) slide, num + 1);
+      SetFocusControl(slide);
     }
 
     public void DeleteSelected()
     {
-      if (this._focusControl == null)
+      if (_focusControl == null)
         return;
-      int index = this.Controls.IndexOf((Control) this._focusControl);
-      this.Controls.Remove((Control) this._focusControl);
-      if (index > this.Controls.Count - 1)
-        index = this.Controls.Count - 1;
+      int index = Controls.IndexOf((Control) _focusControl);
+      Controls.Remove((Control) _focusControl);
+      if (index > Controls.Count - 1)
+        index = Controls.Count - 1;
       if (index > 0)
-        this.SetFocusControl(this.Controls[index] as SlideControl);
-      this.IsDirty = true;
+        SetFocusControl(Controls[index] as SlideControl);
+      IsDirty = true;
     }
 
     public void MoveSelectedDown()
     {
-      int num = this.Controls.IndexOf((Control) this._focusControl);
+      int num = Controls.IndexOf((Control) _focusControl);
       if (num <= 0)
         return;
-      this.IsDirty = true;
-      this.Controls.SetChildIndex((Control) this._focusControl, num - 1);
+      IsDirty = true;
+      Controls.SetChildIndex((Control) _focusControl, num - 1);
     }
 
     public void MoveSelectedUp()
     {
-      int num = this.Controls.IndexOf((Control) this._focusControl);
-      if (num == this.Controls.Count - 1)
+      int num = Controls.IndexOf((Control) _focusControl);
+      if (num == Controls.Count - 1)
         return;
-      this.Controls.SetChildIndex((Control) this._focusControl, num + 1);
-      this.IsDirty = true;
+      Controls.SetChildIndex((Control) _focusControl, num + 1);
+      IsDirty = true;
     }
 
     public void SaveToFile(string fileName)
@@ -214,25 +214,25 @@ namespace PresentationBuilder.Win.Controls
       XmlWriter writer = XmlWriter.Create(fileName);
       writer.WriteStartElement("Root");
       writer.WriteStartElement("Slides");
-      for (int index = this.Controls.Count - 1; index >= 0; --index)
-        ((SlideControl) this.Controls[index]).WriteToXML(writer);
+      for (int index = Controls.Count - 1; index >= 0; --index)
+        ((SlideControl) Controls[index]).WriteToXML(writer);
       writer.WriteEndElement();
       writer.WriteStartElement("Fonts");
-      this.SongFont.WriteToXML(writer, "SongFont");
-      this.IndicatorFont.WriteToXML(writer, "IndicatorFont");
-      this.MessageFont.WriteToXML(writer, "MessageFont");
+      SongFont.WriteToXML(writer, "SongFont");
+      IndicatorFont.WriteToXML(writer, "IndicatorFont");
+      MessageFont.WriteToXML(writer, "MessageFont");
       writer.WriteEndElement();
       writer.WriteEndElement();
       writer.Close();
-      this.IsDirty = false;
+      IsDirty = false;
     }
 
     public void OpenFromFile(string fileName)
     {
-      this.Visible = false;
+      Visible = false;
       try
       {
-        this.Controls.Clear();
+        Controls.Clear();
         XmlReader reader = XmlReader.Create((Stream) new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read));
         reader.Read();
         if (!reader.IsStartElement("Root"))
@@ -243,41 +243,41 @@ namespace PresentationBuilder.Win.Controls
           {
             if (reader.Name == "Slide")
             {
-              SlideControl slide = this.CreateSlide();
-              this.Controls.SetChildIndex((Control) slide, 0);
+              SlideControl slide = CreateSlide();
+              Controls.SetChildIndex((Control) slide, 0);
               slide.ReadFromXML(reader);
             }
             else if (reader.Name == "Font")
             {
               string attribute = reader.GetAttribute("Name");
               if (attribute == "SongFont")
-                this.SongFont.ReadFromXML(reader);
+                SongFont.ReadFromXML(reader);
               else if (attribute == "IndicatorFont")
-                this.IndicatorFont.ReadFromXML(reader);
+                IndicatorFont.ReadFromXML(reader);
               else if (attribute == "MessageFont")
-                this.MessageFont.ReadFromXML(reader);
+                MessageFont.ReadFromXML(reader);
             }
           }
         }
         reader.Close();
-        this.IsDirty = false;
+        IsDirty = false;
       }
       finally
       {
-        this.Visible = true;
+        Visible = true;
       }
     }
 
     protected override void Dispose(bool disposing)
     {
-      if (disposing && this.components != null)
-        this.components.Dispose();
+      if (disposing && components != null)
+        components.Dispose();
       base.Dispose(disposing);
     }
 
     private void InitializeComponent()
     {
-      this.components = (IContainer) new Container();
+      components = (IContainer) new Container();
     }
   }
 }

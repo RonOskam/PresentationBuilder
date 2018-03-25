@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PresentationBuilder.Win.Dialogs.SongSaveAsDialog
-// Assembly: PresentationBuilder, Version=1.0.0.28120, Culture=neutral, PublicKeyToken=ed425d74cb6df699
-// MVID: 295F5AD1-A97E-4830-A536-CA2F8525E5B1
-// Assembly location: C:\oaisd_app\_Misc\Presentation Builer\EXE\PresentationBuilder.exe
-
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using PEC.Windows.Common.Controls;
 using PEC.Windows.Common.Dialogs;
@@ -19,7 +13,7 @@ namespace PresentationBuilder.Win.Dialogs
 {
   public class SongSaveAsDialog : OkCancelDialog
   {
-    private IContainer components = (IContainer) null;
+    private IContainer components = null;
     private Song _song;
     private Label label2;
     private LookUpEdit bookLookup;

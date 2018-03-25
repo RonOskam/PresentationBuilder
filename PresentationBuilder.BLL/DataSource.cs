@@ -81,7 +81,8 @@ namespace PresentationBuilder.BLL
 
     public static Book GetBookBySong(int songId)
     {
-      return Queryable.FirstOrDefault(Queryable.Select(Queryable.Where(PresentationBuilderEntities.Context.Songs, s => s.SongID == songId), s => s.Book));
+      return PresentationBuilderEntities.Context.Songs.Where(s => s.SongID == songId).Select(s => s.Book).FirstOrDefault();
+      //return Queryable.FirstOrDefault(Queryable.Select(Queryable.Where(PresentationBuilderEntities.Context.Songs, s => s.SongID == songId), s => s.Book));
     }
 
     public static void AddSong(Song song)

@@ -260,3 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 /OneDriveApiBrowser
+/PresentationBuilder.BLL/App.Config
+/PresentationBuilder.Win/App.config

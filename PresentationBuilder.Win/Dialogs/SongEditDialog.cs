@@ -26,7 +26,7 @@ namespace PresentationBuilder.Win.Dialogs
     private PresentationBuilderEntities _context = new PresentationBuilderEntities();
     private bool _saved = false;
     private bool _isNew = false;
-    private IContainer components = (IContainer) null;
+    private IContainer components = (IContainer)null;
     private Song _song;
     private int? _songID;
     private TextBox numberTextBox;
@@ -55,43 +55,43 @@ namespace PresentationBuilder.Win.Dialogs
     {
       get
       {
-        return this._songID;
+        return _songID;
       }
     }
 
     public SongEditDialog()
     {
-      this.InitializeComponent();
-      this.verseGridContainer.addButton.Click += new EventHandler(this.addButton_Click);
-      this.verseGridContainer.deleteButton.Click += new EventHandler(this.deleteButton_Click);
-      this.verseGridContainer.addButton.ToolTip = "Add a Verse";
-      this.verseGridContainer.deleteButton.ToolTip = "Delete the selected Verse.";
-      this.verseGridView.SortInfo.Add(this.colVerseNumber, ColumnSortOrder.Ascending);
+      InitializeComponent();
+      verseGridContainer.addButton.Click += new EventHandler(addButton_Click);
+      verseGridContainer.deleteButton.Click += new EventHandler(deleteButton_Click);
+      verseGridContainer.addButton.ToolTip = "Add a Verse";
+      verseGridContainer.deleteButton.ToolTip = "Delete the selected Verse.";
+      verseGridView.SortInfo.Add(colVerseNumber, ColumnSortOrder.Ascending);
     }
 
     private void deleteButton_Click(object sender, EventArgs e)
     {
-      if (this.verseBindingSource.Current == null || MessageBox.Show("Are you sure you want to delete the selected item?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
+      if (verseBindingSource.Current == null || MessageBox.Show("Are you sure you want to delete the selected item?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
         return;
-      Verse entity = (Verse) this.verseBindingSource.Current;
-      if (this._songID.HasValue)
-        this._context.Verses.Remove(entity);
+      Verse entity = (Verse)verseBindingSource.Current;
+      if (_songID.HasValue)
+        _context.Verses.Remove(entity);
       else
-        this._song.Verses.Remove(entity);
+        _song.Verses.Remove(entity);
     }
 
     private void addButton_Click(object sender, EventArgs e)
     {
       var song = (Song)songBindingSource.Current;
       var entity = new Verse();
-      if (song.Verses.Count == 0)      
-        entity.VerseNumber = 1;      
+      if (song.Verses.Count == 0)
+        entity.VerseNumber = 1;
       else
-      {
-        entity.VerseNumber = song.Verses.Max(v => v.VerseNumber);
-        ++entity.VerseNumber;
-      }
+        entity.VerseNumber = Convert.ToByte(song.Verses.Max(v => v.VerseNumber) + 1);
+
       song.Verses.Add(entity);
+
+      songBindingSource.ResetCurrentItem();     
     }
 
     public void EditSong(int songId)
@@ -104,367 +104,367 @@ namespace PresentationBuilder.Win.Dialogs
 
     public void EditSong(Song song)
     {
-      this._song = song;
-      this.songBindingSource.DataSource = this._song;
+      _song = song;
+      songBindingSource.DataSource = _song;
       if (song.Book == null)
       {
-        this._songID = new int?();
-        this.saveAsButton.Visible = true;
-        this.deleteSongButton.Visible = false;
-        this.bookLabel.Enabled = false;
-        this.numberLabel.Enabled = false;
-        this.numberTextBox.Enabled = false;
+        _songID = new int?();
+        saveAsButton.Visible = true;
+        deleteSongButton.Visible = false;
+        bookLabel.Enabled = false;
+        numberLabel.Enabled = false;
+        numberTextBox.Enabled = false;
       }
       else
-        this._songID = new int?(song.SongID);
-      this.Text = "Edit Song";
+        _songID = new int?(song.SongID);
+      Text = "Edit Song";
     }
 
     public void AddSong(int bookId)
     {
-      this._song = new Song();
-      this._song.Book = Queryable.FirstOrDefault<Book>((IQueryable<Book>) this._context.Books, (Expression<Func<Book, bool>>) (b => b.BookID == bookId));
-      this._song.EnteredBy = WindowsIdentity.GetCurrent().Name;
-      this._context.Songs.Add(_song);
-      this.songBindingSource.DataSource = (object) this._song;
-      this._isNew = true;
-      this.Text = "Add Song";
+      _song = new Song();
+      _song.Book = _context.Books.FirstOrDefault(b => b.BookID == bookId);
+      _song.EnteredBy = WindowsIdentity.GetCurrent().Name;
+      _context.Songs.Add(_song);
+      songBindingSource.DataSource = _song;
+      _isNew = true;
+      Text = "Add Song";
     }
 
     private void _okButton_Click(object sender, EventArgs e)
     {
-      string text = (string) null;
-      if (!this._songID.HasValue && this.MustSave)
+      string text = (string)null;
+      if (!_songID.HasValue && MustSave)
         text = "Click on Save As to save the song first.";
-      else if (this._song.Verses.Count == 0)
+      else if (_song.Verses.Count == 0)
         text = "You must enter at least one verse.";
-      else if (this._song.Verses.Count != (int) Enumerable.Max<Verse, byte>((IEnumerable<Verse>) this._song.Verses, (Func<Verse, byte>) (v => v.VerseNumber)))
+      else if (_song.Verses.Count != (int)Enumerable.Max<Verse, byte>((IEnumerable<Verse>)_song.Verses, (Func<Verse, byte>)(v => v.VerseNumber)))
         text = "Please enter all the verses for the song.";
-      else if (string.IsNullOrEmpty(this._song.Name))
+      else if (string.IsNullOrEmpty(_song.Name))
         text = "Name is required.";
-      else if (this._song.IsRefrainFirst && string.IsNullOrEmpty(this._song.Refrain))
+      else if (_song.IsRefrainFirst && string.IsNullOrEmpty(_song.Refrain))
       {
         text = "You must enter a refrain if Refrain First is checked.";
       }
       else
       {
         int num;
-        if (this._isNew)
-          num = (uint) Queryable.Count<Song>((IQueryable<Song>) PresentationBuilderEntities.Context.Songs, (Expression<Func<Song, bool>>) (s => (int) s.Number == (int) this._song.Number && s.Book.BookID == this._song.Book.BookID)) > 0U ? 1 : 0;
+        if (_isNew)
+          num = (uint)Queryable.Count<Song>((IQueryable<Song>)PresentationBuilderEntities.Context.Songs, (Expression<Func<Song, bool>>)(s => (int)s.Number == (int)_song.Number && s.Book.BookID == _song.Book.BookID)) > 0U ? 1 : 0;
         else
           num = 0;
         if (num != 0)
           text = "There is already a song with that number in this book.";
-        else if ((int) this._song.Number == 0)
+        else if ((int)_song.Number == 0)
           text = "0 is not a valid song number.";
       }
       if (text != null)
       {
-        int num = (int) MessageBox.Show(text, Application.ProductName);
-        this.DialogResult = DialogResult.None;
+        int num = (int)MessageBox.Show(text, Application.ProductName);
+        DialogResult = DialogResult.None;
       }
       else
       {
-        DataSource.ResetBook(this._song.Book);
-        this._context.SaveChanges();
-        if (this._saved)
-          this.DialogResult = DialogResult.Retry;
+        DataSource.ResetBook(_song.Book);
+        _context.SaveChanges();
+        if (_saved)
+          DialogResult = DialogResult.Retry;
       }
     }
 
     private void saveAsButton_Click(object sender, EventArgs e)
     {
-      if (new SongSaveAsDialog(this._song, !this.MustSave).ShowDialog() != DialogResult.OK)
+      if (new SongSaveAsDialog(_song, !MustSave).ShowDialog() != DialogResult.OK)
         return;
-      this.EditSong(this._song.SongID);
-      this._saved = true;
-      this.saveAsButton.Visible = false;
-      this.bookLabel.Enabled = true;
-      this.numberLabel.Enabled = true;
-      this.numberTextBox.Enabled = true;
-      this.deleteSongButton.Visible = true;
+      EditSong(_song.SongID);
+      _saved = true;
+      saveAsButton.Visible = false;
+      bookLabel.Enabled = true;
+      numberLabel.Enabled = true;
+      numberTextBox.Enabled = true;
+      deleteSongButton.Visible = true;
     }
 
     private void deleteSongButton_Click(object sender, EventArgs e)
     {
-      if (!this._songID.HasValue || MessageBox.Show("Are you sure you want to delete this song?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
+      if (!_songID.HasValue || MessageBox.Show("Are you sure you want to delete this song?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
         return;
-      DataSource.DeleteSong(this._songID.Value);
-      this._songID = new int?();
-      this.DialogResult = DialogResult.Abort;
+      DataSource.DeleteSong(_songID.Value);
+      _songID = new int?();
+      DialogResult = DialogResult.Abort;
     }
 
     protected override void Dispose(bool disposing)
     {
-      if (disposing && this.components != null)
-        this.components.Dispose();
+      if (disposing && components != null)
+        components.Dispose();
       base.Dispose(disposing);
     }
 
     private void InitializeComponent()
     {
-      this.components = new System.ComponentModel.Container();
-      this.numberTextBox = new System.Windows.Forms.TextBox();
-      this.songBindingSource = new System.Windows.Forms.BindingSource(this.components);
-      this.numberLabel = new System.Windows.Forms.Label();
-      this.label2 = new System.Windows.Forms.Label();
-      this.textBox2 = new System.Windows.Forms.TextBox();
-      this.verseGridContainer = new PEC.Windows.Common.Controls.GridContainer();
-      this.verseGridControl = new DevExpress.XtraGrid.GridControl();
-      this.verseBindingSource = new System.Windows.Forms.BindingSource(this.components);
-      this.verseGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-      this.colVerseNumber = new DevExpress.XtraGrid.Columns.GridColumn();
-      this.colText = new DevExpress.XtraGrid.Columns.GridColumn();
-      this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
-      this.checkBox1 = new System.Windows.Forms.CheckBox();
-      this.refrainMemo = new DevExpress.XtraEditors.MemoEdit();
-      this.label3 = new System.Windows.Forms.Label();
-      this.bookLabel = new System.Windows.Forms.Label();
-      this.textBox3 = new System.Windows.Forms.TextBox();
-      this.saveAsButton = new System.Windows.Forms.Button();
-      this.deleteSongButton = new System.Windows.Forms.Button();
-      ((System.ComponentModel.ISupportInitialize)(this.songBindingSource)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.verseGridContainer.ButtonPanel)).BeginInit();
-      this.verseGridContainer.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.verseGridControl)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.verseBindingSource)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.verseGridView)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.refrainMemo.Properties)).BeginInit();
-      this.SuspendLayout();
+      components = new System.ComponentModel.Container();
+      numberTextBox = new System.Windows.Forms.TextBox();
+      songBindingSource = new System.Windows.Forms.BindingSource(components);
+      numberLabel = new System.Windows.Forms.Label();
+      label2 = new System.Windows.Forms.Label();
+      textBox2 = new System.Windows.Forms.TextBox();
+      verseGridContainer = new PEC.Windows.Common.Controls.GridContainer();
+      verseGridControl = new DevExpress.XtraGrid.GridControl();
+      verseBindingSource = new System.Windows.Forms.BindingSource(components);
+      verseGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+      colVerseNumber = new DevExpress.XtraGrid.Columns.GridColumn();
+      colText = new DevExpress.XtraGrid.Columns.GridColumn();
+      repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+      checkBox1 = new System.Windows.Forms.CheckBox();
+      refrainMemo = new DevExpress.XtraEditors.MemoEdit();
+      label3 = new System.Windows.Forms.Label();
+      bookLabel = new System.Windows.Forms.Label();
+      textBox3 = new System.Windows.Forms.TextBox();
+      saveAsButton = new System.Windows.Forms.Button();
+      deleteSongButton = new System.Windows.Forms.Button();
+      ((System.ComponentModel.ISupportInitialize)(songBindingSource)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(verseGridContainer.ButtonPanel)).BeginInit();
+      verseGridContainer.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(verseGridControl)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(verseBindingSource)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(verseGridView)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(repositoryItemMemoEdit1)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(refrainMemo.Properties)).BeginInit();
+      SuspendLayout();
       // 
       // _okButton
       // 
-      this._okButton.Location = new System.Drawing.Point(542, 461);
-      this._okButton.Click += new System.EventHandler(this._okButton_Click);
+      _okButton.Location = new System.Drawing.Point(542, 461);
+      _okButton.Click += new System.EventHandler(_okButton_Click);
       // 
       // _cancelButton
       // 
-      this._cancelButton.Location = new System.Drawing.Point(623, 461);
+      _cancelButton.Location = new System.Drawing.Point(623, 461);
       // 
       // numberTextBox
       // 
-      this.numberTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.songBindingSource, "Number", true));
-      this.numberTextBox.Location = new System.Drawing.Point(231, 5);
-      this.numberTextBox.Name = "numberTextBox";
-      this.numberTextBox.Size = new System.Drawing.Size(56, 20);
-      this.numberTextBox.TabIndex = 2;
+      numberTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", songBindingSource, "Number", true));
+      numberTextBox.Location = new System.Drawing.Point(231, 5);
+      numberTextBox.Name = "numberTextBox";
+      numberTextBox.Size = new System.Drawing.Size(56, 20);
+      numberTextBox.TabIndex = 2;
       // 
       // songBindingSource
       // 
-      this.songBindingSource.DataSource = typeof(PresentationBuilder.BLL.Song);
+      songBindingSource.DataSource = typeof(PresentationBuilder.BLL.Song);
       // 
       // numberLabel
       // 
-      this.numberLabel.AutoSize = true;
-      this.numberLabel.Location = new System.Drawing.Point(181, 8);
-      this.numberLabel.Name = "numberLabel";
-      this.numberLabel.Size = new System.Drawing.Size(44, 13);
-      this.numberLabel.TabIndex = 3;
-      this.numberLabel.Text = "Number";
+      numberLabel.AutoSize = true;
+      numberLabel.Location = new System.Drawing.Point(181, 8);
+      numberLabel.Name = "numberLabel";
+      numberLabel.Size = new System.Drawing.Size(44, 13);
+      numberLabel.TabIndex = 3;
+      numberLabel.Text = "Number";
       // 
       // label2
       // 
-      this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(293, 8);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(35, 13);
-      this.label2.TabIndex = 5;
-      this.label2.Text = "Name";
+      label2.AutoSize = true;
+      label2.Location = new System.Drawing.Point(293, 8);
+      label2.Name = "label2";
+      label2.Size = new System.Drawing.Size(35, 13);
+      label2.TabIndex = 5;
+      label2.Text = "Name";
       // 
       // textBox2
       // 
-      this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.songBindingSource, "Name", true));
-      this.textBox2.Location = new System.Drawing.Point(334, 5);
-      this.textBox2.Name = "textBox2";
-      this.textBox2.Size = new System.Drawing.Size(262, 20);
-      this.textBox2.TabIndex = 4;
+      textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", songBindingSource, "Name", true));
+      textBox2.Location = new System.Drawing.Point(334, 5);
+      textBox2.Name = "textBox2";
+      textBox2.Size = new System.Drawing.Size(262, 20);
+      textBox2.TabIndex = 4;
       // 
       // verseGridContainer
       // 
-      this.verseGridContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      verseGridContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.verseGridContainer.AutoDelete = false;
+      verseGridContainer.AutoDelete = false;
       // 
       // verseGridContainer.ButtonPanel
       // 
-      this.verseGridContainer.ButtonPanel.Appearance.BackColor = System.Drawing.Color.Transparent;
-      this.verseGridContainer.ButtonPanel.Appearance.Options.UseBackColor = true;
-      this.verseGridContainer.ButtonPanel.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-      this.verseGridContainer.ButtonPanel.Dock = System.Windows.Forms.DockStyle.Right;
-      this.verseGridContainer.ButtonPanel.Location = new System.Drawing.Point(408, 0);
-      this.verseGridContainer.ButtonPanel.Name = "ButtonPanel";
-      this.verseGridContainer.ButtonPanel.Size = new System.Drawing.Size(77, 452);
-      this.verseGridContainer.ButtonPanel.TabIndex = 2;
-      this.verseGridContainer.Controls.Add(this.verseGridControl);
-      this.verseGridContainer.Grid = this.verseGridControl;
-      this.verseGridContainer.Location = new System.Drawing.Point(12, 38);
-      this.verseGridContainer.Name = "verseGridContainer";
-      this.verseGridContainer.Size = new System.Drawing.Size(485, 452);
-      this.verseGridContainer.TabIndex = 6;
+      verseGridContainer.ButtonPanel.Appearance.BackColor = System.Drawing.Color.Transparent;
+      verseGridContainer.ButtonPanel.Appearance.Options.UseBackColor = true;
+      verseGridContainer.ButtonPanel.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+      verseGridContainer.ButtonPanel.Dock = System.Windows.Forms.DockStyle.Right;
+      verseGridContainer.ButtonPanel.Location = new System.Drawing.Point(408, 0);
+      verseGridContainer.ButtonPanel.Name = "ButtonPanel";
+      verseGridContainer.ButtonPanel.Size = new System.Drawing.Size(77, 452);
+      verseGridContainer.ButtonPanel.TabIndex = 2;
+      verseGridContainer.Controls.Add(verseGridControl);
+      verseGridContainer.Grid = verseGridControl;
+      verseGridContainer.Location = new System.Drawing.Point(12, 38);
+      verseGridContainer.Name = "verseGridContainer";
+      verseGridContainer.Size = new System.Drawing.Size(485, 452);
+      verseGridContainer.TabIndex = 6;
       // 
       // verseGridControl
       // 
-      this.verseGridControl.DataSource = this.verseBindingSource;
-      this.verseGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.verseGridControl.Location = new System.Drawing.Point(0, 0);
-      this.verseGridControl.MainView = this.verseGridView;
-      this.verseGridControl.Name = "verseGridControl";
-      this.verseGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemMemoEdit1});
-      this.verseGridControl.Size = new System.Drawing.Size(408, 452);
-      this.verseGridControl.TabIndex = 4;
-      this.verseGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.verseGridView});
+      verseGridControl.DataSource = verseBindingSource;
+      verseGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      verseGridControl.Location = new System.Drawing.Point(0, 0);
+      verseGridControl.MainView = verseGridView;
+      verseGridControl.Name = "verseGridControl";
+      verseGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            repositoryItemMemoEdit1});
+      verseGridControl.Size = new System.Drawing.Size(408, 452);
+      verseGridControl.TabIndex = 4;
+      verseGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            verseGridView});
       // 
       // verseBindingSource
       // 
-      this.verseBindingSource.DataMember = "VerseList";
-      this.verseBindingSource.DataSource = this.songBindingSource;
+      verseBindingSource.DataMember = "VerseList";
+      verseBindingSource.DataSource = songBindingSource;
       // 
       // verseGridView
       // 
-      this.verseGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colVerseNumber,
-            this.colText});
-      this.verseGridView.GridControl = this.verseGridControl;
-      this.verseGridView.Name = "verseGridView";
-      this.verseGridView.RowHeight = 80;
+      verseGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            colVerseNumber,
+            colText});
+      verseGridView.GridControl = verseGridControl;
+      verseGridView.Name = "verseGridView";
+      verseGridView.RowHeight = 80;
       // 
       // colVerseNumber
       // 
-      this.colVerseNumber.AppearanceCell.Options.UseTextOptions = true;
-      this.colVerseNumber.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-      this.colVerseNumber.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top;
-      this.colVerseNumber.Caption = "Number";
-      this.colVerseNumber.FieldName = "VerseNumber";
-      this.colVerseNumber.Name = "colVerseNumber";
-      this.colVerseNumber.Visible = true;
-      this.colVerseNumber.VisibleIndex = 0;
-      this.colVerseNumber.Width = 56;
+      colVerseNumber.AppearanceCell.Options.UseTextOptions = true;
+      colVerseNumber.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+      colVerseNumber.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Top;
+      colVerseNumber.Caption = "Number";
+      colVerseNumber.FieldName = "VerseNumber";
+      colVerseNumber.Name = "colVerseNumber";
+      colVerseNumber.Visible = true;
+      colVerseNumber.VisibleIndex = 0;
+      colVerseNumber.Width = 56;
       // 
       // colText
       // 
-      this.colText.ColumnEdit = this.repositoryItemMemoEdit1;
-      this.colText.FieldName = "Text";
-      this.colText.Name = "colText";
-      this.colText.Visible = true;
-      this.colText.VisibleIndex = 1;
-      this.colText.Width = 333;
+      colText.ColumnEdit = repositoryItemMemoEdit1;
+      colText.FieldName = "Text";
+      colText.Name = "colText";
+      colText.Visible = true;
+      colText.VisibleIndex = 1;
+      colText.Width = 333;
       // 
       // repositoryItemMemoEdit1
       // 
-      this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
+      repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
       // 
       // checkBox1
       // 
-      this.checkBox1.AutoSize = true;
-      this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.songBindingSource, "IsRefrainFirst", true));
-      this.checkBox1.Location = new System.Drawing.Point(506, 38);
-      this.checkBox1.Name = "checkBox1";
-      this.checkBox1.Size = new System.Drawing.Size(82, 17);
-      this.checkBox1.TabIndex = 7;
-      this.checkBox1.Text = "Refrain First";
-      this.checkBox1.UseVisualStyleBackColor = true;
+      checkBox1.AutoSize = true;
+      checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", songBindingSource, "IsRefrainFirst", true));
+      checkBox1.Location = new System.Drawing.Point(506, 38);
+      checkBox1.Name = "checkBox1";
+      checkBox1.Size = new System.Drawing.Size(82, 17);
+      checkBox1.TabIndex = 7;
+      checkBox1.Text = "Refrain First";
+      checkBox1.UseVisualStyleBackColor = true;
       // 
       // refrainMemo
       // 
-      this.refrainMemo.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.songBindingSource, "Refrain", true));
-      this.refrainMemo.Location = new System.Drawing.Point(503, 76);
-      this.refrainMemo.Name = "refrainMemo";
-      this.refrainMemo.Size = new System.Drawing.Size(194, 199);
-      this.refrainMemo.TabIndex = 8;
+      refrainMemo.DataBindings.Add(new System.Windows.Forms.Binding("Text", songBindingSource, "Refrain", true));
+      refrainMemo.Location = new System.Drawing.Point(503, 76);
+      refrainMemo.Name = "refrainMemo";
+      refrainMemo.Size = new System.Drawing.Size(194, 199);
+      refrainMemo.TabIndex = 8;
       // 
       // label3
       // 
-      this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(503, 60);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(41, 13);
-      this.label3.TabIndex = 9;
-      this.label3.Text = "Refrain";
+      label3.AutoSize = true;
+      label3.Location = new System.Drawing.Point(503, 60);
+      label3.Name = "label3";
+      label3.Size = new System.Drawing.Size(41, 13);
+      label3.TabIndex = 9;
+      label3.Text = "Refrain";
       // 
       // bookLabel
       // 
-      this.bookLabel.AutoSize = true;
-      this.bookLabel.Location = new System.Drawing.Point(12, 8);
-      this.bookLabel.Name = "bookLabel";
-      this.bookLabel.Size = new System.Drawing.Size(32, 13);
-      this.bookLabel.TabIndex = 11;
-      this.bookLabel.Text = "Book";
+      bookLabel.AutoSize = true;
+      bookLabel.Location = new System.Drawing.Point(12, 8);
+      bookLabel.Name = "bookLabel";
+      bookLabel.Size = new System.Drawing.Size(32, 13);
+      bookLabel.TabIndex = 11;
+      bookLabel.Text = "Book";
       // 
       // textBox3
       // 
-      this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.songBindingSource, "Book.Title", true));
-      this.textBox3.Location = new System.Drawing.Point(44, 6);
-      this.textBox3.Name = "textBox3";
-      this.textBox3.ReadOnly = true;
-      this.textBox3.Size = new System.Drawing.Size(131, 20);
-      this.textBox3.TabIndex = 10;
+      textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", songBindingSource, "Book.Title", true));
+      textBox3.Location = new System.Drawing.Point(44, 6);
+      textBox3.Name = "textBox3";
+      textBox3.ReadOnly = true;
+      textBox3.Size = new System.Drawing.Size(131, 20);
+      textBox3.TabIndex = 10;
       // 
       // saveAsButton
       // 
-      this.saveAsButton.Location = new System.Drawing.Point(623, 3);
-      this.saveAsButton.Name = "saveAsButton";
-      this.saveAsButton.Size = new System.Drawing.Size(75, 23);
-      this.saveAsButton.TabIndex = 12;
-      this.saveAsButton.Text = "Save As";
-      this.saveAsButton.UseVisualStyleBackColor = true;
-      this.saveAsButton.Visible = false;
-      this.saveAsButton.Click += new System.EventHandler(this.saveAsButton_Click);
+      saveAsButton.Location = new System.Drawing.Point(623, 3);
+      saveAsButton.Name = "saveAsButton";
+      saveAsButton.Size = new System.Drawing.Size(75, 23);
+      saveAsButton.TabIndex = 12;
+      saveAsButton.Text = "Save As";
+      saveAsButton.UseVisualStyleBackColor = true;
+      saveAsButton.Visible = false;
+      saveAsButton.Click += new System.EventHandler(saveAsButton_Click);
       // 
       // deleteSongButton
       // 
-      this.deleteSongButton.Location = new System.Drawing.Point(426, 461);
-      this.deleteSongButton.Name = "deleteSongButton";
-      this.deleteSongButton.Size = new System.Drawing.Size(75, 23);
-      this.deleteSongButton.TabIndex = 14;
-      this.deleteSongButton.Text = "Delete Song";
-      this.deleteSongButton.UseVisualStyleBackColor = true;
-      this.deleteSongButton.Click += new System.EventHandler(this.deleteSongButton_Click);
+      deleteSongButton.Location = new System.Drawing.Point(426, 461);
+      deleteSongButton.Name = "deleteSongButton";
+      deleteSongButton.Size = new System.Drawing.Size(75, 23);
+      deleteSongButton.TabIndex = 14;
+      deleteSongButton.Text = "Delete Song";
+      deleteSongButton.UseVisualStyleBackColor = true;
+      deleteSongButton.Click += new System.EventHandler(deleteSongButton_Click);
       // 
       // SongEditDialog
       // 
-      this.ClientSize = new System.Drawing.Size(710, 496);
-      this.Controls.Add(this.deleteSongButton);
-      this.Controls.Add(this.saveAsButton);
-      this.Controls.Add(this.bookLabel);
-      this.Controls.Add(this.textBox3);
-      this.Controls.Add(this.label3);
-      this.Controls.Add(this.refrainMemo);
-      this.Controls.Add(this.checkBox1);
-      this.Controls.Add(this.verseGridContainer);
-      this.Controls.Add(this.label2);
-      this.Controls.Add(this.textBox2);
-      this.Controls.Add(this.numberLabel);
-      this.Controls.Add(this.numberTextBox);
-      this.Name = "SongEditDialog";
-      this.Text = "Song Edit";
-      this.Controls.SetChildIndex(this.numberTextBox, 0);
-      this.Controls.SetChildIndex(this.numberLabel, 0);
-      this.Controls.SetChildIndex(this._okButton, 0);
-      this.Controls.SetChildIndex(this._cancelButton, 0);
-      this.Controls.SetChildIndex(this.textBox2, 0);
-      this.Controls.SetChildIndex(this.label2, 0);
-      this.Controls.SetChildIndex(this.verseGridContainer, 0);
-      this.Controls.SetChildIndex(this.checkBox1, 0);
-      this.Controls.SetChildIndex(this.refrainMemo, 0);
-      this.Controls.SetChildIndex(this.label3, 0);
-      this.Controls.SetChildIndex(this.textBox3, 0);
-      this.Controls.SetChildIndex(this.bookLabel, 0);
-      this.Controls.SetChildIndex(this.saveAsButton, 0);
-      this.Controls.SetChildIndex(this.deleteSongButton, 0);
-      ((System.ComponentModel.ISupportInitialize)(this.songBindingSource)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.verseGridContainer.ButtonPanel)).EndInit();
-      this.verseGridContainer.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.verseGridControl)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.verseBindingSource)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.verseGridView)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.refrainMemo.Properties)).EndInit();
-      this.ResumeLayout(false);
-      this.PerformLayout();
+      ClientSize = new System.Drawing.Size(710, 496);
+      Controls.Add(deleteSongButton);
+      Controls.Add(saveAsButton);
+      Controls.Add(bookLabel);
+      Controls.Add(textBox3);
+      Controls.Add(label3);
+      Controls.Add(refrainMemo);
+      Controls.Add(checkBox1);
+      Controls.Add(verseGridContainer);
+      Controls.Add(label2);
+      Controls.Add(textBox2);
+      Controls.Add(numberLabel);
+      Controls.Add(numberTextBox);
+      Name = "SongEditDialog";
+      Text = "Song Edit";
+      Controls.SetChildIndex(numberTextBox, 0);
+      Controls.SetChildIndex(numberLabel, 0);
+      Controls.SetChildIndex(_okButton, 0);
+      Controls.SetChildIndex(_cancelButton, 0);
+      Controls.SetChildIndex(textBox2, 0);
+      Controls.SetChildIndex(label2, 0);
+      Controls.SetChildIndex(verseGridContainer, 0);
+      Controls.SetChildIndex(checkBox1, 0);
+      Controls.SetChildIndex(refrainMemo, 0);
+      Controls.SetChildIndex(label3, 0);
+      Controls.SetChildIndex(textBox3, 0);
+      Controls.SetChildIndex(bookLabel, 0);
+      Controls.SetChildIndex(saveAsButton, 0);
+      Controls.SetChildIndex(deleteSongButton, 0);
+      ((System.ComponentModel.ISupportInitialize)(songBindingSource)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(verseGridContainer.ButtonPanel)).EndInit();
+      verseGridContainer.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(verseGridControl)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(verseBindingSource)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(verseGridView)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(repositoryItemMemoEdit1)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(refrainMemo.Properties)).EndInit();
+      ResumeLayout(false);
+      PerformLayout();
 
     }
   }

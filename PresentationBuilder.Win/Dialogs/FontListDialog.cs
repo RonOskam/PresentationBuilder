@@ -28,15 +28,15 @@ namespace PresentationBuilder.Win.Dialogs
     {
       get
       {
-        return this._songFont;
+        return _songFont;
       }
       set
       {
-        this._songFont = value;
+        _songFont = value;
         if (value == null)
           return;
-        this.songFontLabel.Font = this._songFont.SetFont();
-        this.songFontLabel.ForeColor = this._songFont.FontColor;
+        songFontLabel.Font = _songFont.SetFont();
+        songFontLabel.ForeColor = _songFont.FontColor;
       }
     }
 
@@ -44,15 +44,15 @@ namespace PresentationBuilder.Win.Dialogs
     {
       get
       {
-        return this._indicatorFont;
+        return _indicatorFont;
       }
       set
       {
-        this._indicatorFont = value;
+        _indicatorFont = value;
         if (value == null)
           return;
-        this.numberFontLabel.Font = this._indicatorFont.SetFont();
-        this.numberFontLabel.ForeColor = this._indicatorFont.FontColor;
+        numberFontLabel.Font = _indicatorFont.SetFont();
+        numberFontLabel.ForeColor = _indicatorFont.FontColor;
       }
     }
 
@@ -60,21 +60,21 @@ namespace PresentationBuilder.Win.Dialogs
     {
       get
       {
-        return this._messageFont;
+        return _messageFont;
       }
       set
       {
-        this._messageFont = value;
+        _messageFont = value;
         if (value == null)
           return;
-        this.messageFontLabel.Font = this._messageFont.SetFont();
-        this.messageFontLabel.ForeColor = this._messageFont.FontColor;
+        messageFontLabel.Font = _messageFont.SetFont();
+        messageFontLabel.ForeColor = _messageFont.FontColor;
       }
     }
 
     public FontListDialog()
     {
-      this.InitializeComponent();
+      InitializeComponent();
     }
 
     private void songButton_Click(object sender, EventArgs e)
@@ -83,156 +83,156 @@ namespace PresentationBuilder.Win.Dialogs
       fontSelectDialog.SelectedFont = SongFont;
       if (fontSelectDialog.ShowDialog() != DialogResult.OK)
         return;
-      this.SongFont = fontSelectDialog.SelectedFont;
+      SongFont = fontSelectDialog.SelectedFont;
     }
 
     private void messageButton_Click(object sender, EventArgs e)
     {
       FontSelectDialog fontSelectDialog = new FontSelectDialog();
-      fontSelectDialog.SelectedFont = this.MessageFont;
+      fontSelectDialog.SelectedFont = MessageFont;
       if (fontSelectDialog.ShowDialog() != DialogResult.OK)
         return;
-      this.MessageFont = fontSelectDialog.SelectedFont;
+      MessageFont = fontSelectDialog.SelectedFont;
     }
 
     private void numberButton_Click(object sender, EventArgs e)
     {
       FontSelectDialog fontSelectDialog = new FontSelectDialog();
-      fontSelectDialog.SelectedFont = this.IndicatorFont;
+      fontSelectDialog.SelectedFont = IndicatorFont;
       if (fontSelectDialog.ShowDialog() != DialogResult.OK)
         return;
-      this.IndicatorFont = fontSelectDialog.SelectedFont;
+      IndicatorFont = fontSelectDialog.SelectedFont;
     }
 
     private void defaultButton_Click(object sender, EventArgs e)
     {
-      this._songFont.SaveFont("SongFont");
-      this._messageFont.SaveFont("MessageFont");
-      this._indicatorFont.SaveFont("IndicatorFont");
+      _songFont.SaveFont("SongFont");
+      _messageFont.SaveFont("MessageFont");
+      _indicatorFont.SaveFont("IndicatorFont");
     }
 
     protected override void Dispose(bool disposing)
     {
-      if (disposing && this.components != null)
-        this.components.Dispose();
+      if (disposing && components != null)
+        components.Dispose();
       base.Dispose(disposing);
     }
 
     private void InitializeComponent()
     {
-      this.songFontLabel = new Label();
-      this.label1 = new Label();
-      this.songButton = new Button();
-      this.messageButton = new Button();
-      this.label2 = new Label();
-      this.messageFontLabel = new Label();
-      this.numberButton = new Button();
-      this.label4 = new Label();
-      this.numberFontLabel = new Label();
-      this.defaultButton = new Button();
-      this.SuspendLayout();
-      this._okButton.Location = new Point(223, 417);
-      this._cancelButton.Location = new Point(304, 417);
-      this.songFontLabel.BackColor = Color.LightGray;
-      this.songFontLabel.BorderStyle = BorderStyle.FixedSingle;
-      this.songFontLabel.Font = new Font("Microsoft Sans Serif", 32f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
-      this.songFontLabel.Location = new Point(12, 37);
-      this.songFontLabel.Name = "songFontLabel";
-      this.songFontLabel.Size = new Size(361, 90);
-      this.songFontLabel.TabIndex = 4;
-      this.songFontLabel.Text = "AaBbCc";
-      this.songFontLabel.TextAlign = ContentAlignment.MiddleCenter;
-      this.label1.AutoSize = true;
-      this.label1.Location = new Point(12, 17);
-      this.label1.Name = "label1";
-      this.label1.Size = new Size(56, 13);
-      this.label1.TabIndex = 5;
-      this.label1.Text = "Song Font";
-      this.songButton.Location = new Point(298, 11);
-      this.songButton.Name = "songButton";
-      this.songButton.Size = new Size(75, 23);
-      this.songButton.TabIndex = 6;
-      this.songButton.Text = "Select";
-      this.songButton.UseVisualStyleBackColor = true;
-      this.songButton.Click += new EventHandler(this.songButton_Click);
-      this.messageButton.Location = new Point(298, 145);
-      this.messageButton.Name = "messageButton";
-      this.messageButton.Size = new Size(75, 23);
-      this.messageButton.TabIndex = 9;
-      this.messageButton.Text = "Select";
-      this.messageButton.UseVisualStyleBackColor = true;
-      this.messageButton.Click += new EventHandler(this.messageButton_Click);
-      this.label2.AutoSize = true;
-      this.label2.Location = new Point(12, 150);
-      this.label2.Name = "label2";
-      this.label2.Size = new Size(74, 13);
-      this.label2.TabIndex = 8;
-      this.label2.Text = "Message Font";
-      this.messageFontLabel.BackColor = Color.LightGray;
-      this.messageFontLabel.BorderStyle = BorderStyle.FixedSingle;
-      this.messageFontLabel.Font = new Font("Microsoft Sans Serif", 32f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
-      this.messageFontLabel.Location = new Point(12, 170);
-      this.messageFontLabel.Name = "messageFontLabel";
-      this.messageFontLabel.Size = new Size(361, 90);
-      this.messageFontLabel.TabIndex = 7;
-      this.messageFontLabel.Text = "AaBbCc";
-      this.messageFontLabel.TextAlign = ContentAlignment.MiddleCenter;
-      this.numberButton.Location = new Point(298, 276);
-      this.numberButton.Name = "numberButton";
-      this.numberButton.Size = new Size(75, 23);
-      this.numberButton.TabIndex = 12;
-      this.numberButton.Text = "Select";
-      this.numberButton.UseVisualStyleBackColor = true;
-      this.numberButton.Click += new EventHandler(this.numberButton_Click);
-      this.label4.AutoSize = true;
-      this.label4.Location = new Point(12, 281);
-      this.label4.Name = "label4";
-      this.label4.Size = new Size(96, 13);
-      this.label4.TabIndex = 11;
-      this.label4.Text = "Song Number Font";
-      this.numberFontLabel.BackColor = Color.LightGray;
-      this.numberFontLabel.BorderStyle = BorderStyle.FixedSingle;
-      this.numberFontLabel.Font = new Font("Microsoft Sans Serif", 32f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
-      this.numberFontLabel.Location = new Point(12, 301);
-      this.numberFontLabel.Name = "numberFontLabel";
-      this.numberFontLabel.Size = new Size(361, 90);
-      this.numberFontLabel.TabIndex = 10;
-      this.numberFontLabel.Text = "AaBbCc";
-      this.numberFontLabel.TextAlign = ContentAlignment.MiddleCenter;
-      this.defaultButton.Location = new Point(12, 417);
-      this.defaultButton.Name = "defaultButton";
-      this.defaultButton.Size = new Size(75, 23);
-      this.defaultButton.TabIndex = 13;
-      this.defaultButton.Text = "Set Default";
-      this.defaultButton.UseVisualStyleBackColor = true;
-      this.defaultButton.Click += new EventHandler(this.defaultButton_Click);
-      this.ClientSize = new Size(391, 452);
-      this.Controls.Add((Control) this.defaultButton);
-      this.Controls.Add((Control) this.numberButton);
-      this.Controls.Add((Control) this.label4);
-      this.Controls.Add((Control) this.numberFontLabel);
-      this.Controls.Add((Control) this.messageButton);
-      this.Controls.Add((Control) this.label2);
-      this.Controls.Add((Control) this.messageFontLabel);
-      this.Controls.Add((Control) this.songButton);
-      this.Controls.Add((Control) this.label1);
-      this.Controls.Add((Control) this.songFontLabel);
-      this.Name = "FontListDialog";
-      this.Text = "Fonts";
-      this.Controls.SetChildIndex((Control) this._okButton, 0);
-      this.Controls.SetChildIndex((Control) this._cancelButton, 0);
-      this.Controls.SetChildIndex((Control) this.songFontLabel, 0);
-      this.Controls.SetChildIndex((Control) this.label1, 0);
-      this.Controls.SetChildIndex((Control) this.songButton, 0);
-      this.Controls.SetChildIndex((Control) this.messageFontLabel, 0);
-      this.Controls.SetChildIndex((Control) this.label2, 0);
-      this.Controls.SetChildIndex((Control) this.messageButton, 0);
-      this.Controls.SetChildIndex((Control) this.numberFontLabel, 0);
-      this.Controls.SetChildIndex((Control) this.label4, 0);
-      this.Controls.SetChildIndex((Control) this.numberButton, 0);
-      this.Controls.SetChildIndex((Control) this.defaultButton, 0);
-      this.ResumeLayout(false);
-      this.PerformLayout();
+      songFontLabel = new Label();
+      label1 = new Label();
+      songButton = new Button();
+      messageButton = new Button();
+      label2 = new Label();
+      messageFontLabel = new Label();
+      numberButton = new Button();
+      label4 = new Label();
+      numberFontLabel = new Label();
+      defaultButton = new Button();
+      SuspendLayout();
+      _okButton.Location = new Point(223, 417);
+      _cancelButton.Location = new Point(304, 417);
+      songFontLabel.BackColor = Color.LightGray;
+      songFontLabel.BorderStyle = BorderStyle.FixedSingle;
+      songFontLabel.Font = new Font("Microsoft Sans Serif", 32f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
+      songFontLabel.Location = new Point(12, 37);
+      songFontLabel.Name = "songFontLabel";
+      songFontLabel.Size = new Size(361, 90);
+      songFontLabel.TabIndex = 4;
+      songFontLabel.Text = "AaBbCc";
+      songFontLabel.TextAlign = ContentAlignment.MiddleCenter;
+      label1.AutoSize = true;
+      label1.Location = new Point(12, 17);
+      label1.Name = "label1";
+      label1.Size = new Size(56, 13);
+      label1.TabIndex = 5;
+      label1.Text = "Song Font";
+      songButton.Location = new Point(298, 11);
+      songButton.Name = "songButton";
+      songButton.Size = new Size(75, 23);
+      songButton.TabIndex = 6;
+      songButton.Text = "Select";
+      songButton.UseVisualStyleBackColor = true;
+      songButton.Click += new EventHandler(songButton_Click);
+      messageButton.Location = new Point(298, 145);
+      messageButton.Name = "messageButton";
+      messageButton.Size = new Size(75, 23);
+      messageButton.TabIndex = 9;
+      messageButton.Text = "Select";
+      messageButton.UseVisualStyleBackColor = true;
+      messageButton.Click += new EventHandler(messageButton_Click);
+      label2.AutoSize = true;
+      label2.Location = new Point(12, 150);
+      label2.Name = "label2";
+      label2.Size = new Size(74, 13);
+      label2.TabIndex = 8;
+      label2.Text = "Message Font";
+      messageFontLabel.BackColor = Color.LightGray;
+      messageFontLabel.BorderStyle = BorderStyle.FixedSingle;
+      messageFontLabel.Font = new Font("Microsoft Sans Serif", 32f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
+      messageFontLabel.Location = new Point(12, 170);
+      messageFontLabel.Name = "messageFontLabel";
+      messageFontLabel.Size = new Size(361, 90);
+      messageFontLabel.TabIndex = 7;
+      messageFontLabel.Text = "AaBbCc";
+      messageFontLabel.TextAlign = ContentAlignment.MiddleCenter;
+      numberButton.Location = new Point(298, 276);
+      numberButton.Name = "numberButton";
+      numberButton.Size = new Size(75, 23);
+      numberButton.TabIndex = 12;
+      numberButton.Text = "Select";
+      numberButton.UseVisualStyleBackColor = true;
+      numberButton.Click += new EventHandler(numberButton_Click);
+      label4.AutoSize = true;
+      label4.Location = new Point(12, 281);
+      label4.Name = "label4";
+      label4.Size = new Size(96, 13);
+      label4.TabIndex = 11;
+      label4.Text = "Song Number Font";
+      numberFontLabel.BackColor = Color.LightGray;
+      numberFontLabel.BorderStyle = BorderStyle.FixedSingle;
+      numberFontLabel.Font = new Font("Microsoft Sans Serif", 32f, FontStyle.Bold, GraphicsUnit.Point, (byte) 0);
+      numberFontLabel.Location = new Point(12, 301);
+      numberFontLabel.Name = "numberFontLabel";
+      numberFontLabel.Size = new Size(361, 90);
+      numberFontLabel.TabIndex = 10;
+      numberFontLabel.Text = "AaBbCc";
+      numberFontLabel.TextAlign = ContentAlignment.MiddleCenter;
+      defaultButton.Location = new Point(12, 417);
+      defaultButton.Name = "defaultButton";
+      defaultButton.Size = new Size(75, 23);
+      defaultButton.TabIndex = 13;
+      defaultButton.Text = "Set Default";
+      defaultButton.UseVisualStyleBackColor = true;
+      defaultButton.Click += new EventHandler(defaultButton_Click);
+      ClientSize = new Size(391, 452);
+      Controls.Add((Control) defaultButton);
+      Controls.Add((Control) numberButton);
+      Controls.Add((Control) label4);
+      Controls.Add((Control) numberFontLabel);
+      Controls.Add((Control) messageButton);
+      Controls.Add((Control) label2);
+      Controls.Add((Control) messageFontLabel);
+      Controls.Add((Control) songButton);
+      Controls.Add((Control) label1);
+      Controls.Add((Control) songFontLabel);
+      Name = "FontListDialog";
+      Text = "Fonts";
+      Controls.SetChildIndex((Control) _okButton, 0);
+      Controls.SetChildIndex((Control) _cancelButton, 0);
+      Controls.SetChildIndex((Control) songFontLabel, 0);
+      Controls.SetChildIndex((Control) label1, 0);
+      Controls.SetChildIndex((Control) songButton, 0);
+      Controls.SetChildIndex((Control) messageFontLabel, 0);
+      Controls.SetChildIndex((Control) label2, 0);
+      Controls.SetChildIndex((Control) messageButton, 0);
+      Controls.SetChildIndex((Control) numberFontLabel, 0);
+      Controls.SetChildIndex((Control) label4, 0);
+      Controls.SetChildIndex((Control) numberButton, 0);
+      Controls.SetChildIndex((Control) defaultButton, 0);
+      ResumeLayout(false);
+      PerformLayout();
     }
   }
 }

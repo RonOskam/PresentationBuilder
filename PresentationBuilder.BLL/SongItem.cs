@@ -10,17 +10,7 @@ namespace PresentationBuilder.BLL
 
     public string Name { get; set; }
 
-    public byte VerseCount { get; set; }
+    public int VerseCount { get; set; }
 
-    public static SongItem GetSongItem(Song song)
-    {
-      return new SongItem()
-      {
-        SongID = song.SongID,
-        Number = (int) song.Number,
-        Name = song.Name,
-        VerseCount = Convert.ToByte(song.Verses.Count)
-      };
-    }
   }
 }

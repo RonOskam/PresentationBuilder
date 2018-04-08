@@ -19,8 +19,8 @@ namespace PresentationBuilder.Win.Controls
 {
   public class SlideControl : UserControl
   {
-    private Song _internetSong = (Song) null;
-    private IContainer components = (IContainer) null;
+    private Song _internetSong = (Song)null;
+    private IContainer components = (IContainer)null;
     private Panel songPanel;
     private Label label3;
     private Label label2;
@@ -47,20 +47,20 @@ namespace PresentationBuilder.Win.Controls
     public SlideControl()
     {
       InitializeComponent();
-      LookupEdit.Initialize(typeLookup, typeof (SlideType));
+      LookupEdit.Initialize(typeLookup, typeof(SlideType));
       songLookup.Properties.DropDownRows = 15;
       bookLookup.Properties.DropDownRows = 15;
       messagePanel.Top = songPanel.Top;
       passagePanel.Top = songPanel.Top;
       typeLookup.Properties.ForceInitialize();
       typeLookup.ItemIndex = 0;
-      typeLookup_EditValueChanged((object) null, EventArgs.Empty);
+      typeLookup_EditValueChanged(null, EventArgs.Empty);
       SetClickEvent(Controls);
     }
 
     private void SetClickEvent(Control.ControlCollection controls)
     {
-      foreach (Control control in (ArrangedElementCollection) controls)
+      foreach (Control control in (ArrangedElementCollection)controls)
       {
         control.Click += new EventHandler(SlideControl_Click);
         SetClickEvent(control.Controls);
@@ -79,15 +79,10 @@ namespace PresentationBuilder.Win.Controls
 
     private void typeLookup_EditValueChanged(object sender, EventArgs e)
     {
-      // ISSUE: reference to a compiler-generated field
-      if (Changed != null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        Changed((object) this, EventArgs.Empty);
-      }
+      Changed?.Invoke(this, EventArgs.Empty);
       if (typeLookup.EditValue == null)
         return;
-      SlideType slideType = (SlideType) typeLookup.EditValue;
+      SlideType slideType = (SlideType)typeLookup.EditValue;
       songPanel.Visible = slideType == SlideType.Song;
       messagePanel.Visible = slideType == SlideType.Message;
       passagePanel.Visible = slideType == SlideType.BiblePassage;
@@ -99,14 +94,14 @@ namespace PresentationBuilder.Win.Controls
           Title = "(Search Internet)",
           BookID = -1
         });
-        LookupEdit.Initialize(bookLookup, "Title", (string) null, (IEnumerable) books);
+        LookupEdit.Initialize(bookLookup, "Title", (string)null, (IEnumerable)books);
         Height = 50;
       }
       else
         Height = 33;
       if (slideType != SlideType.Message)
         return;
-      LookupEdit.Initialize(messageTypeLookup, "Description", (string) null, (IEnumerable) DataSource.GetMessageTypes());
+      LookupEdit.Initialize(messageTypeLookup, "Description", (string)null, (IEnumerable)DataSource.GetMessageTypes());
     }
 
     private void bookLookup_EditValueChanged(object sender, EventArgs e)
@@ -114,12 +109,8 @@ namespace PresentationBuilder.Win.Controls
       if (bookLookup.EditValue == null || bookLookup.Tag != null)
         return;
       // ISSUE: reference to a compiler-generated field
-      if (Changed != null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        Changed((object) this, EventArgs.Empty);
-      }
-      Book book = (Book) bookLookup.EditValue;
+      Changed?.Invoke(this, EventArgs.Empty);
+      Book book = (Book)bookLookup.EditValue;
       if (book.BookID == -1)
       {
         SongSearchDialog songSearchDialog = new SongSearchDialog();
@@ -135,12 +126,12 @@ namespace PresentationBuilder.Win.Controls
             int? selectedSongId = songEditDialog.SelectedSongID;
             if (selectedSongId.HasValue)
             {
-              bookLookup.EditValue = (object) selectedSong.Book;
-              foreach (SongItem song in (List<SongItem>) songLookup.Properties.DataSource)
+              bookLookup.EditValue = selectedSong.Book;
+              foreach (SongItem song in (List<SongItem>)songLookup.Properties.DataSource)
               {
                 if (song.SongID == selectedSongId.Value)
                 {
-                  songLookup.EditValue = (object) song;
+                  songLookup.EditValue = song;
                   ConfigureVerses(song);
                   break;
                 }
@@ -150,14 +141,14 @@ namespace PresentationBuilder.Win.Controls
             {
               _internetSong = selectedSong;
               ConfigureVerses(_internetSong);
-              songLookup.EditValue = (object) null;
+              songLookup.EditValue = null;
             }
           }
           else
-            bookLookup.EditValue = (object) null;
+            bookLookup.EditValue = null;
         }
         else
-          bookLookup.EditValue = (object) null;
+          bookLookup.EditValue = null;
       }
       else
         LoadSongLookup(book);
@@ -166,22 +157,22 @@ namespace PresentationBuilder.Win.Controls
     private void LoadSongLookup(Book book)
     {
       songLookup.Properties.Columns.Clear();
-      LookupEdit.Initialize(songLookup, "Number", (string) null, (IEnumerable) DataSource.GetSongItems(book));
+      LookupEdit.Initialize(songLookup, "Number", (string)null, DataSource.GetSongItems(book));
       songLookup.Properties.Columns.Add(new LookUpColumnInfo("Name", 150));
     }
 
     public void UpdateSongList()
     {
-      if ((SlideType) typeLookup.EditValue != SlideType.Song || bookLookup.EditValue == null)
+      if ((SlideType)typeLookup.EditValue != SlideType.Song || bookLookup.EditValue == null)
         return;
-      Book book = (Book) bookLookup.EditValue;
+      Book book = (Book)bookLookup.EditValue;
       if (book.BookID != -1)
       {
         object editValue = songLookup.EditValue;
         LoadSongLookup(book);
         if (editValue != null)
         {
-          songLookup.Text = ((SongItem) editValue).Number.ToString();
+          songLookup.Text = ((SongItem)editValue).Number.ToString();
           songLookup.ClosePopup();
         }
       }
@@ -192,14 +183,11 @@ namespace PresentationBuilder.Win.Controls
       if (messageTypeLookup.EditValue == null)
         return;
       // ISSUE: reference to a compiler-generated field
-      if (Changed != null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        Changed((object) this, EventArgs.Empty);
-      }
-      MessageType messageType = (MessageType) messageTypeLookup.EditValue;
+      // ISSUE: reference to a compiler-generated field
+      Changed?.Invoke(this, EventArgs.Empty);
+      MessageType messageType = (MessageType)messageTypeLookup.EditValue;
       messageLookup.Properties.Columns.Clear();
-      LookupEdit.Initialize(messageLookup, "Text", "MessageID", (IEnumerable) messageType.Messages);
+      LookupEdit.Initialize(messageLookup, "Text", "MessageID", (IEnumerable)messageType.Messages);
       messageLookup.Properties.Columns.Add(new LookUpColumnInfo("Code", 5));
     }
 
@@ -209,30 +197,26 @@ namespace PresentationBuilder.Win.Controls
         return;
       ConfigureVerses(songLookup.EditValue as SongItem);
       // ISSUE: reference to a compiler-generated field
-      if (Changed != null)
-      {
-        // ISSUE: reference to a compiler-generated field
-        Changed((object) this, EventArgs.Empty);
-      }
+      Changed?.Invoke(this, EventArgs.Empty);
     }
 
     private void ConfigureVerses(SongItem song)
     {
       verseCheckList.Items.Clear();
-      for (int index = 1; index <= (int) song.VerseCount; ++index)
-        verseCheckList.Items.Add((object) index, index == 1);
+      for (int index = 1; index <= song.VerseCount; index++)
+        verseCheckList.Items.Add(index, index == 1);
     }
 
     private void ConfigureVerses(Song song)
     {
       verseCheckList.Items.Clear();
       foreach (Verse verse in song.Verses)
-        verseCheckList.Items.Add((object) Convert.ToInt32(verse.VerseNumber), (int) verse.VerseNumber == 1);
+        verseCheckList.Items.Add(Convert.ToInt32(verse.VerseNumber), (int)verse.VerseNumber == 1);
     }
 
     private void verseCheckList_KeyPress(object sender, KeyPressEventArgs e)
     {
-      if (char.IsDigit(e.KeyChar) && (int) e.KeyChar != 48)
+      if (char.IsDigit(e.KeyChar) && (int)e.KeyChar != 48)
       {
         int num = Convert.ToInt32(e.KeyChar.ToString());
         if (num > verseCheckList.Items.Count)
@@ -242,9 +226,9 @@ namespace PresentationBuilder.Win.Controls
       }
       else
       {
-        if ((int) e.KeyChar != 97)
+        if ((int)e.KeyChar != 97)
           return;
-        foreach (CheckedListBoxItem checkedListBoxItem in (CollectionBase) verseCheckList.Items)
+        foreach (CheckedListBoxItem checkedListBoxItem in (CollectionBase)verseCheckList.Items)
           checkedListBoxItem.CheckState = CheckState.Checked;
       }
     }
@@ -256,27 +240,27 @@ namespace PresentationBuilder.Win.Controls
 
     public SlideItem CreateSlide()
     {
-      switch ((SlideType) typeLookup.EditValue)
+      switch ((SlideType)typeLookup.EditValue)
       {
         case SlideType.Song:
-          Song song = (Song) null;
+          Song song = (Song)null;
           if (_internetSong != null)
             song = _internetSong;
           else if (songLookup.EditValue != null)
-            song = DataSource.GetSong(((SongItem) songLookup.EditValue).SongID);
+            song = DataSource.GetSong(((SongItem)songLookup.EditValue).SongID);
           List<int> verses = new List<int>();
-          foreach (CheckedListBoxItem checkedListBoxItem in (CollectionBase) verseCheckList.Items)
+          foreach (CheckedListBoxItem checkedListBoxItem in (CollectionBase)verseCheckList.Items)
           {
             if (checkedListBoxItem.CheckState == CheckState.Checked)
-              verses.Add((int) checkedListBoxItem.Value);
+              verses.Add((int)checkedListBoxItem.Value);
           }
-          return (SlideItem) new SongSlide(song, verses);
+          return (SlideItem)new SongSlide(song, verses);
         case SlideType.Message:
-          return (SlideItem) new MessageSlide(messageLookup.Text);
+          return (SlideItem)new MessageSlide(messageLookup.Text);
         case SlideType.BiblePassage:
-          return (SlideItem) new PassageSlide(passageTextBox.Text);
+          return (SlideItem)new PassageSlide(passageTextBox.Text);
         default:
-          return (SlideItem) new BlankSlide();
+          return (SlideItem)new BlankSlide();
       }
     }
 
@@ -285,7 +269,7 @@ namespace PresentationBuilder.Win.Controls
       SongEditDialog songEditDialog = new SongEditDialog();
       if (songLookup.EditValue != null)
       {
-        SongItem songItem = (SongItem) songLookup.EditValue;
+        SongItem songItem = (SongItem)songLookup.EditValue;
         songEditDialog.EditSong(songItem.SongID);
       }
       else if (_internetSong != null)
@@ -295,7 +279,7 @@ namespace PresentationBuilder.Win.Controls
       switch (dialogResult)
       {
         case DialogResult.Abort:
-          bookLookup_EditValueChanged((object) null, EventArgs.Empty);
+          bookLookup_EditValueChanged(null, EventArgs.Empty);
           return;
         case DialogResult.OK:
           num = 1;
@@ -310,21 +294,21 @@ namespace PresentationBuilder.Win.Controls
       if (Changed != null)
       {
         // ISSUE: reference to a compiler-generated field
-        Changed((object) this, EventArgs.Empty);
+        Changed(this, EventArgs.Empty);
       }
       int? selectedSongId = songEditDialog.SelectedSongID;
       if (selectedSongId.HasValue)
       {
-        bookLookup.EditValue = (object) DataSource.GetBookBySong(selectedSongId.Value);
+        bookLookup.EditValue = DataSource.GetBookBySong(selectedSongId.Value);
         UpdateSongList();
-        foreach (SongItem song in (List<SongItem>) songLookup.Properties.DataSource)
+        foreach (SongItem song in (List<SongItem>)songLookup.Properties.DataSource)
         {
           if (song.SongID == selectedSongId.Value)
           {
-            songLookup.EditValue = (object) song;
+            songLookup.EditValue = song;
             songLookup.ClosePopup();
             ConfigureVerses(song);
-            _internetSong = (Song) null;
+            _internetSong = (Song)null;
             break;
           }
         }
@@ -337,7 +321,7 @@ namespace PresentationBuilder.Win.Controls
     {
       writer.WriteStartElement("Slide");
       writer.WriteAttributeString("Type", typeLookup.Text);
-      switch ((SlideType) typeLookup.EditValue)
+      switch ((SlideType)typeLookup.EditValue)
       {
         case SlideType.Song:
           if (_internetSong != null)
@@ -347,12 +331,12 @@ namespace PresentationBuilder.Win.Controls
           else
           {
             if (bookLookup.EditValue != null)
-              writer.WriteAttributeString("Book", ((Book) bookLookup.EditValue).BookID.ToString());
+              writer.WriteAttributeString("Book", ((Book)bookLookup.EditValue).BookID.ToString());
             if (songLookup.EditValue != null)
-              writer.WriteAttributeString("Song", ((SongItem) songLookup.EditValue).SongID.ToString());
+              writer.WriteAttributeString("Song", ((SongItem)songLookup.EditValue).SongID.ToString());
           }
           writer.WriteStartElement("SelectedVerses");
-          foreach (CheckedListBoxItem checkedListBoxItem in (CollectionBase) verseCheckList.Items)
+          foreach (CheckedListBoxItem checkedListBoxItem in (CollectionBase)verseCheckList.Items)
           {
             if (checkedListBoxItem.CheckState == CheckState.Checked)
             {
@@ -365,7 +349,7 @@ namespace PresentationBuilder.Win.Controls
           break;
         case SlideType.Message:
           if (messageTypeLookup.EditValue != null)
-            writer.WriteAttributeString("MessageType", ((MessageType) messageTypeLookup.EditValue).MessageTypeID.ToString());
+            writer.WriteAttributeString("MessageType", ((MessageType)messageTypeLookup.EditValue).MessageTypeID.ToString());
           if (messageLookup.EditValue != null)
           {
             writer.WriteAttributeString("Message", Convert.ToString(messageLookup.EditValue));
@@ -389,8 +373,8 @@ namespace PresentationBuilder.Win.Controls
           bookLookup.EditValue = Enumerable.FirstOrDefault<Book>((IEnumerable<Book>)bookLookup.Properties.DataSource, (Func<Book, bool>)(t => t.BookID == Convert.ToInt32(reader.Value)));
         else if (reader.Name == "Song")
         {
-          SongItem song = Enumerable.FirstOrDefault<SongItem>((IEnumerable<SongItem>) songLookup.Properties.DataSource, (Func<SongItem, bool>) (t => t.SongID == Convert.ToInt32(reader.Value)));
-          songLookup.EditValue = (object) song;
+          SongItem song = Enumerable.FirstOrDefault<SongItem>((IEnumerable<SongItem>)songLookup.Properties.DataSource, (Func<SongItem, bool>)(t => t.SongID == Convert.ToInt32(reader.Value)));
+          songLookup.EditValue = song;
           reader.Read();
           if (song != null)
             ConfigureVerses(song);
@@ -399,9 +383,9 @@ namespace PresentationBuilder.Win.Controls
         else if (reader.Name == "InternetSong")
         {
           _internetSong = new Song();
-          bookLookup.Tag = (object) "X";
-          bookLookup.EditValue = bookLookup.Properties.GetDataSourceRowByDisplayValue((object) "(Search Internet)");
-          bookLookup.Tag = (object) null;
+          bookLookup.Tag = "X";
+          bookLookup.EditValue = bookLookup.Properties.GetDataSourceRowByDisplayValue("(Search Internet)");
+          bookLookup.Tag = null;
         }
         else if (reader.Name == "Name")
           _internetSong.Name = reader.Value;
@@ -435,9 +419,9 @@ namespace PresentationBuilder.Win.Controls
         else if (reader.Name == "Passage")
           passageTextBox.Text = reader.Value;
         else if (reader.Name == "MessageType")
-          messageTypeLookup.EditValue = (object) Enumerable.FirstOrDefault<MessageType>((IEnumerable<MessageType>) messageTypeLookup.Properties.DataSource, (Func<MessageType, bool>) (t => t.MessageTypeID == Convert.ToInt32(reader.Value)));
+          messageTypeLookup.EditValue = Enumerable.FirstOrDefault<MessageType>((IEnumerable<MessageType>)messageTypeLookup.Properties.DataSource, (Func<MessageType, bool>)(t => t.MessageTypeID == Convert.ToInt32(reader.Value)));
         else if (reader.Name == "Message")
-          messageLookup.EditValue = (object) Convert.ToInt32(reader.Value);
+          messageLookup.EditValue = Convert.ToInt32(reader.Value);
       }
     }
 
@@ -464,7 +448,7 @@ namespace PresentationBuilder.Win.Controls
       if (Changed == null)
         return;
       // ISSUE: reference to a compiler-generated field
-      Changed((object) this, EventArgs.Empty);
+      Changed(this, EventArgs.Empty);
     }
 
     protected override void Dispose(bool disposing)
@@ -521,18 +505,18 @@ namespace PresentationBuilder.Win.Controls
       typeLookup.TabIndex = 0;
       typeLookup.EditValueChanged += new EventHandler(typeLookup_EditValueChanged);
       songPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      songPanel.Controls.Add((Control) openButton);
-      songPanel.Controls.Add((Control) label3);
-      songPanel.Controls.Add((Control) label2);
-      songPanel.Controls.Add((Control) label1);
-      songPanel.Controls.Add((Control) verseCheckList);
-      songPanel.Controls.Add((Control) songLookup);
-      songPanel.Controls.Add((Control) bookLookup);
+      songPanel.Controls.Add((Control)openButton);
+      songPanel.Controls.Add((Control)label3);
+      songPanel.Controls.Add((Control)label2);
+      songPanel.Controls.Add((Control)label1);
+      songPanel.Controls.Add((Control)verseCheckList);
+      songPanel.Controls.Add((Control)songLookup);
+      songPanel.Controls.Add((Control)bookLookup);
       songPanel.Location = new Point(105, 1);
       songPanel.Name = "songPanel";
       songPanel.Size = new Size(490, 48);
       songPanel.TabIndex = 2;
-      openButton.Location = new Point((int) sbyte.MaxValue, 24);
+      openButton.Location = new Point((int)sbyte.MaxValue, 24);
       openButton.Name = "openButton";
       openButton.Size = new Size(46, 21);
       openButton.TabIndex = 11;
@@ -564,7 +548,7 @@ namespace PresentationBuilder.Win.Controls
       verseCheckList.MultiColumn = true;
       verseCheckList.Name = "verseCheckList";
       verseCheckList.SelectionMode = SelectionMode.None;
-      verseCheckList.Size = new Size((int) byte.MaxValue, 41);
+      verseCheckList.Size = new Size((int)byte.MaxValue, 41);
       verseCheckList.TabIndex = 7;
       verseCheckList.ItemCheck += new DevExpress.XtraEditors.Controls.ItemCheckEventHandler(verseCheckList_ItemCheck);
       verseCheckList.KeyPress += new KeyPressEventHandler(verseCheckList_KeyPress);
@@ -588,10 +572,10 @@ namespace PresentationBuilder.Win.Controls
       bookLookup.TabIndex = 5;
       bookLookup.EditValueChanged += new EventHandler(bookLookup_EditValueChanged);
       messagePanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      messagePanel.Controls.Add((Control) label5);
-      messagePanel.Controls.Add((Control) label4);
-      messagePanel.Controls.Add((Control) messageLookup);
-      messagePanel.Controls.Add((Control) messageTypeLookup);
+      messagePanel.Controls.Add((Control)label5);
+      messagePanel.Controls.Add((Control)label4);
+      messagePanel.Controls.Add((Control)messageLookup);
+      messagePanel.Controls.Add((Control)messageTypeLookup);
       messagePanel.Location = new Point(105, 64);
       messagePanel.Name = "messagePanel";
       messagePanel.Size = new Size(490, 30);
@@ -630,8 +614,8 @@ namespace PresentationBuilder.Win.Controls
       messageTypeLookup.TabIndex = 9;
       messageTypeLookup.EditValueChanged += new EventHandler(messageTypeLookup_EditValueChanged);
       passagePanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      passagePanel.Controls.Add((Control) passageTextBox);
-      passagePanel.Controls.Add((Control) label7);
+      passagePanel.Controls.Add((Control)passageTextBox);
+      passagePanel.Controls.Add((Control)label7);
       passagePanel.Location = new Point(105, 99);
       passagePanel.Name = "passagePanel";
       passagePanel.Size = new Size(490, 30);
@@ -656,11 +640,11 @@ namespace PresentationBuilder.Win.Controls
       AutoScaleDimensions = new SizeF(6f, 13f);
       AutoScaleMode = AutoScaleMode.Font;
       BackColor = SystemColors.Control;
-      Controls.Add((Control) panel1);
-      Controls.Add((Control) passagePanel);
-      Controls.Add((Control) messagePanel);
-      Controls.Add((Control) songPanel);
-      Controls.Add((Control) typeLookup);
+      Controls.Add((Control)panel1);
+      Controls.Add((Control)passagePanel);
+      Controls.Add((Control)messagePanel);
+      Controls.Add((Control)songPanel);
+      Controls.Add((Control)typeLookup);
       Name = "SlideControl";
       Size = new Size(598, 144);
       Click += new EventHandler(SlideControl_Click);

@@ -96,12 +96,13 @@ namespace PresentationBuilder.Win
       fontListDialog.SongFont = slidePanel.SongFont;
       fontListDialog.IndicatorFont = slidePanel.IndicatorFont;
       fontListDialog.MessageFont = slidePanel.MessageFont;
-      if (fontListDialog.ShowDialog() != DialogResult.OK)
-        return;
-      slidePanel.SongFont = fontListDialog.SongFont;
-      slidePanel.IndicatorFont = fontListDialog.IndicatorFont;
-      slidePanel.MessageFont = fontListDialog.MessageFont;
-      slidePanel.IsDirty = true;
+      if (fontListDialog.ShowDialog() == DialogResult.OK)
+      {
+        slidePanel.SongFont = fontListDialog.SongFont;
+        slidePanel.IndicatorFont = fontListDialog.IndicatorFont;
+        slidePanel.MessageFont = fontListDialog.MessageFont;
+        slidePanel.IsDirty = true;
+      }
     }
 
     private void deleteStripButton_Click(object sender, EventArgs e)
@@ -636,7 +637,7 @@ namespace PresentationBuilder.Win
       fontItem1.Shadow = false;
       fontItem1.Size = 32F;
       fontItem1.Underline = false;
-      this.slidePanel.IndicatorFont = fontItem1;
+      //this.slidePanel.IndicatorFont = fontItem1;
       this.slidePanel.IsDirty = false;
       this.slidePanel.Location = new System.Drawing.Point(7, 52);
       fontItem2.Bold = true;
@@ -647,7 +648,7 @@ namespace PresentationBuilder.Win
       fontItem2.Shadow = false;
       fontItem2.Size = 32F;
       fontItem2.Underline = false;
-      this.slidePanel.MessageFont = fontItem2;
+      //this.slidePanel.MessageFont = fontItem2;
       this.slidePanel.Name = "slidePanel";
       this.slidePanel.Size = new System.Drawing.Size(649, 415);
       fontItem3.Bold = true;
@@ -658,7 +659,7 @@ namespace PresentationBuilder.Win
       fontItem3.Shadow = false;
       fontItem3.Size = 32F;
       fontItem3.Underline = false;
-      this.slidePanel.SongFont = fontItem3;
+      //this.slidePanel.SongFont = fontItem3;
       this.slidePanel.TabIndex = 3;
       // 
       // MainForm

@@ -46,7 +46,7 @@ namespace PresentationBuilder.BLL.PowerPoint
     internal override void Generate(Presentation presentation)
     {
       bool? nullable = new bool?();
-      bool flag = !string.IsNullOrEmpty(this._song.Refrain) && (uint) this._song.Refrain.Trim().Length > 0U;
+      bool flag = !string.IsNullOrEmpty(this._song.Refrain) && _song.Refrain.Trim().Length > 0;
       if (this._song.IsRefrainFirst & flag)
       {
         Slide slide = this.GenerateSlide(presentation);
@@ -56,7 +56,7 @@ namespace PresentationBuilder.BLL.PowerPoint
       foreach (int num in this._verses)
       {
         int verse = num;
-        string text1 = Enumerable.FirstOrDefault<string>(Enumerable.Select<Verse, string>(Enumerable.Where<Verse>((IEnumerable<Verse>) this._song.Verses, (Func<Verse, bool>) (v => (int) v.VerseNumber == verse)), (Func<Verse, string>) (v => v.Text))).Trim();
+        string text1 = Enumerable.FirstOrDefault(Enumerable.Select(Enumerable.Where(_song.Verses, v => v.VerseNumber == verse), v => v.Text)).Trim();
         if (!nullable.HasValue)
           nullable = new bool?(flag && !this._song.IsRefrainFirst && !this.DoesTextFit(text1 + "\r\n" + this._song.Refrain, SongSlide._songFont));
         Slide slide1 = this.GenerateSlide(presentation);

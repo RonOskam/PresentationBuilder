@@ -262,3 +262,5 @@ __pycache__/
 /OneDriveApiBrowser
 /PresentationBuilder.BLL/App.Config
 /PresentationBuilder.Win/App.config
+/Microsoft.OneDrive.SDK
+/OneDriveSDK

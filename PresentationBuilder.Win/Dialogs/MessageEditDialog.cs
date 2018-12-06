@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PresentationBuilder.Win.Dialogs
 {
@@ -46,18 +47,35 @@ namespace PresentationBuilder.Win.Dialogs
       if (this.messageBindingSource.Current == null || MessageBox.Show("Are you sure you want to delete the selected item?", Application.ProductName, MessageBoxButtons.YesNo) != DialogResult.Yes)
         return;
       this._context.Messages.Remove((BLL.Message)messageBindingSource.Current);
+      messageBindingSource.ResetBindings(false);
     }
 
     private void addButton_Click(object sender, EventArgs e)
     {
-      if (this.typeLookup.EditValue == null)
-        return;
-      ((MessageType) this.typeLookup.EditValue).Messages.Add(new PresentationBuilder.BLL.Message());
+      if (typeLookup.EditValue != null)
+      {
+        //((MessageType)typeLookup.EditValue).Messages.Add(new BLL.Message());     
+
+        //var messageType = (MessageType)typeLookup.EditValue;
+
+        var typeID = ((MessageType)typeLookup.EditValue).MessageTypeID;
+        var list = (List<BLL.Message>)messageBindingSource.DataSource;
+        var message = new BLL.Message();
+        //message.MessageType = messageType;
+        message.MessageTypeID = typeID;
+        list.Add(message);
+
+        _context.Messages.Add(message);
+        messageBindingSource.ResetBindings(false);
+      }
     }
 
     private void typeLookup_EditValueChanged(object sender, EventArgs e)
     {
-      this.messageBindingSource.DataSource = (object) ((MessageType) this.typeLookup.EditValue).Messages;
+      //messageBindingSource.DataSource = ((MessageType)typeLookup.EditValue).Messages.ToList();
+      var typeID = ((MessageType)typeLookup.EditValue).MessageTypeID;
+      var list = _context.Messages.Where(m => m.MessageTypeID == typeID).ToList();
+      messageBindingSource.DataSource = list;
     }
 
     private void _okButton_Click(object sender, EventArgs e)
@@ -187,6 +205,9 @@ namespace PresentationBuilder.Win.Dialogs
       // 
       this.typeLookup.Location = new System.Drawing.Point(95, 6);
       this.typeLookup.Name = "typeLookup";
+      // 
+      // 
+      // 
       this.typeLookup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
       this.typeLookup.Size = new System.Drawing.Size(119, 20);

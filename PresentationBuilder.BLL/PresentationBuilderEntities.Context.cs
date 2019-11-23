@@ -9,26 +9,29 @@
 
 namespace PresentationBuilder.BLL
 {
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
-    
-    public partial class PresentationBuilderEntities : DbContext
+  using System;
+  using System.Data.Entity;
+  using System.Data.Entity.Infrastructure;
+
+  public partial class PresentationBuilderEntities : DbContext
+  {
+    public PresentationBuilderEntities()
+        : base("name=PresentationBuilderEntities")
     {
-        public PresentationBuilderEntities()
-            : base("name=PresentationBuilderEntities")
-        {
-        }
-    
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            throw new UnintentionalCodeFirstException();
-        }
-    
-        public virtual DbSet<Book> Books { get; set; }
-        public virtual DbSet<Message> Messages { get; set; }
-        public virtual DbSet<MessageType> MessageTypes { get; set; }
-        public virtual DbSet<Song> Songs { get; set; }
-        public virtual DbSet<Verse> Verses { get; set; }
+      //Assuming the PBData file is in the users MyDocuments folder
+      var file = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\PBData.sqlite";
+      Database.Connection.ConnectionString = $"data source={ file };DateTimeFormat=InvariantCulture;foreign keys=true";
     }
+
+    protected override void OnModelCreating(DbModelBuilder modelBuilder)
+    {
+      throw new UnintentionalCodeFirstException();
+    }
+
+    public virtual DbSet<Book> Books { get; set; }
+    public virtual DbSet<Message> Messages { get; set; }
+    public virtual DbSet<MessageType> MessageTypes { get; set; }
+    public virtual DbSet<Song> Songs { get; set; }
+    public virtual DbSet<Verse> Verses { get; set; }
+  }
 }

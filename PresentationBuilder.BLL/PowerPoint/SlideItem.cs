@@ -46,7 +46,7 @@ namespace PresentationBuilder.BLL.PowerPoint
 
     public virtual string Validate()
     {
-      return (string) null;
+      return null;
     }
   }
 }

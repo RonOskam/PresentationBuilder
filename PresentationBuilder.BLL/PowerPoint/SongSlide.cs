@@ -94,5 +94,6 @@ namespace PresentationBuilder.BLL.PowerPoint
     Song,
     Message,
     BiblePassage,
+    File
   }
 }

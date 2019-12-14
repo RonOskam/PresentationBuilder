@@ -51,7 +51,7 @@ namespace PresentationBuilder.BLL.PowerPoint
 
     public void Generate()
     {
-      ApplicationClass applicationClass = new ApplicationClass();
+      var applicationClass = new ApplicationClass();
       Presentation presentation = applicationClass.Presentations.Add(MsoTriState.msoTrue);
       foreach (SlideItem slideItem in this._slides)
         slideItem.Generate(presentation);

@@ -88,6 +88,7 @@
     <Compile Include="PassageReader.cs" />
     <Compile Include="DataSource.cs" />
     <Compile Include="CyberhymnalReader.cs" />
+    <Compile Include="PowerPoint\FileSlide.cs" />
     <Compile Include="PresentationBuilderEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

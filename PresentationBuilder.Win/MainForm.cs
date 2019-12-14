@@ -443,7 +443,7 @@ namespace PresentationBuilder.Win
       this.fontStripButton.Name = "fontStripButton";
       this.fontStripButton.Size = new System.Drawing.Size(23, 22);
       this.fontStripButton.Text = "toolStripButton10";
-      this.fontStripButton.ToolTipText = "Slide Font";
+      this.fontStripButton.ToolTipText = "Slide Fonts";
       this.fontStripButton.Click += new System.EventHandler(this.fontStripButton_Click);
       // 
       // songStripButton

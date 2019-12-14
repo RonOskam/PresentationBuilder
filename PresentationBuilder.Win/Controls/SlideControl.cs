@@ -28,7 +28,7 @@ namespace PresentationBuilder.Win.Controls
     private CheckedListBoxControl verseCheckList;
     private LookUpEdit songLookup;
     private LookUpEdit bookLookup;
-    private Panel messagePanel;
+    public Panel messagePanel;
     private Label label5;
     private Label label4;
     private LookUpEdit messageLookup;
@@ -38,7 +38,11 @@ namespace PresentationBuilder.Win.Controls
     private Label label7;
     private Panel panel1;
     private Button openButton;
-    internal LookUpEdit typeLookup;
+    private Panel filePanel;
+    private Button browseButton;
+    private TextBox fileTextBox;
+    private Label label6;
+    public LookUpEdit typeLookup;
 
     internal SlideListBox ParentBox { get; set; }
 
@@ -52,6 +56,7 @@ namespace PresentationBuilder.Win.Controls
       bookLookup.Properties.DropDownRows = 15;
       messagePanel.Top = songPanel.Top;
       passagePanel.Top = songPanel.Top;
+      filePanel.Top = songPanel.Top;
       typeLookup.Properties.ForceInitialize();
       typeLookup.ItemIndex = 0;
       typeLookup_EditValueChanged(null, EventArgs.Empty);
@@ -86,6 +91,7 @@ namespace PresentationBuilder.Win.Controls
       songPanel.Visible = slideType == SlideType.Song;
       messagePanel.Visible = slideType == SlideType.Message;
       passagePanel.Visible = slideType == SlideType.BiblePassage;
+      filePanel.Visible = (slideType == SlideType.File);
       if (slideType == SlideType.Song)
       {
         List<Book> books = DataSource.GetBooks();
@@ -99,9 +105,9 @@ namespace PresentationBuilder.Win.Controls
       }
       else
         Height = 33;
-      if (slideType != SlideType.Message)
-        return;
-      LookupEdit.Initialize(messageTypeLookup, "Description", (string)null, (IEnumerable)DataSource.GetMessageTypes());
+
+      if (slideType == SlideType.Message)
+        LookupEdit.Initialize(messageTypeLookup, "Description", (string)null, (IEnumerable)DataSource.GetMessageTypes());
     }
 
     private void bookLookup_EditValueChanged(object sender, EventArgs e)
@@ -182,8 +188,7 @@ namespace PresentationBuilder.Win.Controls
     {
       if (messageTypeLookup.EditValue == null)
         return;
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
+
       Changed?.Invoke(this, EventArgs.Empty);
       MessageType messageType = (MessageType)messageTypeLookup.EditValue;
       messageLookup.Properties.Columns.Clear();
@@ -259,6 +264,8 @@ namespace PresentationBuilder.Win.Controls
           return (SlideItem)new MessageSlide(messageLookup.Text);
         case SlideType.BiblePassage:
           return (SlideItem)new PassageSlide(passageTextBox.Text);
+        case SlideType.File:
+          return new FileSlide(fileTextBox.Tag.ToString());
         default:
           return (SlideItem)new BlankSlide();
       }
@@ -444,11 +451,19 @@ namespace PresentationBuilder.Win.Controls
 
     private void verseCheckList_ItemCheck(object sender, DevExpress.XtraEditors.Controls.ItemCheckEventArgs e)
     {
-      // ISSUE: reference to a compiler-generated field
-      if (Changed == null)
-        return;
-      // ISSUE: reference to a compiler-generated field
-      Changed(this, EventArgs.Empty);
+      if (Changed != null)
+        Changed(this, EventArgs.Empty);
+    }
+
+    private void browseButton_Click(object sender, EventArgs e)
+    {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+      openFileDialog.Filter = "Powerpoint Files (*.pptx) | *.pptx";
+      if (openFileDialog.ShowDialog() == DialogResult.OK)
+      {
+        fileTextBox.Text = System.IO.Path.GetFileName(openFileDialog.FileName);
+        fileTextBox.Tag = openFileDialog.FileName;
+      }
     }
 
     protected override void Dispose(bool disposing)
@@ -460,209 +475,327 @@ namespace PresentationBuilder.Win.Controls
 
     private void InitializeComponent()
     {
-      typeLookup = new LookUpEdit();
-      songPanel = new Panel();
-      openButton = new Button();
-      label3 = new Label();
-      label2 = new Label();
-      label1 = new Label();
-      verseCheckList = new CheckedListBoxControl();
-      songLookup = new LookUpEdit();
-      bookLookup = new LookUpEdit();
-      messagePanel = new Panel();
-      label5 = new Label();
-      label4 = new Label();
-      messageLookup = new LookUpEdit();
-      messageTypeLookup = new LookUpEdit();
-      passagePanel = new Panel();
-      passageTextBox = new TextBox();
-      label7 = new Label();
-      panel1 = new Panel();
-      typeLookup.Properties.BeginInit();
-      songPanel.SuspendLayout();
-      //verseCheckList.BeginInit();
-      songLookup.Properties.BeginInit();
-      bookLookup.Properties.BeginInit();
-      messagePanel.SuspendLayout();
-      messageLookup.Properties.BeginInit();
-      messageTypeLookup.Properties.BeginInit();
-      passagePanel.SuspendLayout();
-      SuspendLayout();
-      typeLookup.Location = new Point(3, 6);
-      typeLookup.Name = "typeLookup";
-      typeLookup.Properties.AllowNullInput = DefaultBoolean.False;
-      typeLookup.Properties.Buttons.AddRange(new EditorButton[1]
-      {
-        new EditorButton(ButtonPredefines.Combo)
-      });
-      typeLookup.Properties.DropDownRows = 4;
-      typeLookup.Properties.NullText = "";
-      typeLookup.Properties.ShowFooter = false;
-      typeLookup.Properties.ShowHeader = false;
-      typeLookup.Properties.ShowLines = false;
-      typeLookup.Properties.ThrowExceptionOnInvalidLookUpEditValueType = true;
-      typeLookup.Size = new Size(100, 20);
-      typeLookup.TabIndex = 0;
-      typeLookup.EditValueChanged += new EventHandler(typeLookup_EditValueChanged);
-      songPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      songPanel.Controls.Add((Control)openButton);
-      songPanel.Controls.Add((Control)label3);
-      songPanel.Controls.Add((Control)label2);
-      songPanel.Controls.Add((Control)label1);
-      songPanel.Controls.Add((Control)verseCheckList);
-      songPanel.Controls.Add((Control)songLookup);
-      songPanel.Controls.Add((Control)bookLookup);
-      songPanel.Location = new Point(105, 1);
-      songPanel.Name = "songPanel";
-      songPanel.Size = new Size(490, 48);
-      songPanel.TabIndex = 2;
-      openButton.Location = new Point((int)sbyte.MaxValue, 24);
-      openButton.Name = "openButton";
-      openButton.Size = new Size(46, 21);
-      openButton.TabIndex = 11;
-      openButton.Text = "Open";
-      openButton.UseVisualStyleBackColor = true;
-      openButton.Click += new EventHandler(openButton_Click);
-      label3.AutoSize = true;
-      label3.Location = new Point(7, 28);
-      label3.Name = "label3";
-      label3.Size = new Size(32, 13);
-      label3.TabIndex = 10;
-      label3.Text = "Song";
-      label2.AutoSize = true;
-      label2.Location = new Point(7, 6);
-      label2.Name = "label2";
-      label2.Size = new Size(32, 13);
-      label2.TabIndex = 9;
-      label2.Text = "Book";
-      label1.AutoSize = true;
-      label1.Location = new Point(179, 6);
-      label1.Name = "label1";
-      label1.Size = new Size(39, 13);
-      label1.TabIndex = 8;
-      label1.Text = "Verses";
-      verseCheckList.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      verseCheckList.CheckOnClick = true;
-      verseCheckList.ColumnWidth = 35;
-      verseCheckList.Location = new Point(224, 4);
-      verseCheckList.MultiColumn = true;
-      verseCheckList.Name = "verseCheckList";
-      verseCheckList.SelectionMode = SelectionMode.None;
-      verseCheckList.Size = new Size((int)byte.MaxValue, 41);
-      verseCheckList.TabIndex = 7;
-      verseCheckList.ItemCheck += new DevExpress.XtraEditors.Controls.ItemCheckEventHandler(verseCheckList_ItemCheck);
-      verseCheckList.KeyPress += new KeyPressEventHandler(verseCheckList_KeyPress);
-      songLookup.Location = new Point(44, 25);
-      songLookup.Name = "songLookup";
-      songLookup.Properties.Buttons.AddRange(new EditorButton[1]
-      {
-        new EditorButton(ButtonPredefines.Combo)
-      });
-      songLookup.Properties.NullText = "";
-      songLookup.Size = new Size(68, 20);
-      songLookup.TabIndex = 6;
-      songLookup.EditValueChanged += new EventHandler(songLookup_EditValueChanged);
-      bookLookup.Location = new Point(44, 3);
-      bookLookup.Name = "bookLookup";
-      bookLookup.Properties.Buttons.AddRange(new EditorButton[1]
-      {
-        new EditorButton(ButtonPredefines.Combo)
-      });
-      bookLookup.Size = new Size(129, 20);
-      bookLookup.TabIndex = 5;
-      bookLookup.EditValueChanged += new EventHandler(bookLookup_EditValueChanged);
-      messagePanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      messagePanel.Controls.Add((Control)label5);
-      messagePanel.Controls.Add((Control)label4);
-      messagePanel.Controls.Add((Control)messageLookup);
-      messagePanel.Controls.Add((Control)messageTypeLookup);
-      messagePanel.Location = new Point(105, 64);
-      messagePanel.Name = "messagePanel";
-      messagePanel.Size = new Size(490, 30);
-      messagePanel.TabIndex = 3;
-      label5.AutoSize = true;
-      label5.Location = new Point(148, 8);
-      label5.Name = "label5";
-      label5.Size = new Size(50, 13);
-      label5.TabIndex = 12;
-      label5.Text = "Message";
-      label4.AutoSize = true;
-      label4.Location = new Point(7, 8);
-      label4.Name = "label4";
-      label4.Size = new Size(31, 13);
-      label4.TabIndex = 11;
-      label4.Text = "Type";
-      messageLookup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      messageLookup.Location = new Point(204, 5);
-      messageLookup.Name = "messageLookup";
-      messageLookup.Properties.Buttons.AddRange(new EditorButton[1]
-      {
-        new EditorButton(ButtonPredefines.Combo)
-      });
-      messageLookup.Properties.DropDownRows = 15;
-      messageLookup.Properties.NullText = "";
-      messageLookup.Properties.PopupWidth = 400;
-      messageLookup.Size = new Size(275, 20);
-      messageLookup.TabIndex = 10;
-      messageTypeLookup.Location = new Point(44, 5);
-      messageTypeLookup.Name = "messageTypeLookup";
-      messageTypeLookup.Properties.Buttons.AddRange(new EditorButton[1]
-      {
-        new EditorButton(ButtonPredefines.Combo)
-      });
-      messageTypeLookup.Size = new Size(98, 20);
-      messageTypeLookup.TabIndex = 9;
-      messageTypeLookup.EditValueChanged += new EventHandler(messageTypeLookup_EditValueChanged);
-      passagePanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      passagePanel.Controls.Add((Control)passageTextBox);
-      passagePanel.Controls.Add((Control)label7);
-      passagePanel.Location = new Point(105, 99);
-      passagePanel.Name = "passagePanel";
-      passagePanel.Size = new Size(490, 30);
-      passagePanel.TabIndex = 14;
-      passageTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      passageTextBox.Location = new Point(57, 5);
-      passageTextBox.Name = "passageTextBox";
-      passageTextBox.Size = new Size(422, 20);
-      passageTextBox.TabIndex = 12;
-      label7.AutoSize = true;
-      label7.Location = new Point(3, 8);
-      label7.Name = "label7";
-      label7.Size = new Size(48, 13);
-      label7.TabIndex = 11;
-      label7.Text = "Passage";
-      panel1.BorderStyle = BorderStyle.FixedSingle;
-      panel1.Dock = DockStyle.Bottom;
-      panel1.Location = new Point(0, 143);
-      panel1.Name = "panel1";
-      panel1.Size = new Size(598, 1);
-      panel1.TabIndex = 15;
-      AutoScaleDimensions = new SizeF(6f, 13f);
-      AutoScaleMode = AutoScaleMode.Font;
-      BackColor = SystemColors.Control;
-      Controls.Add((Control)panel1);
-      Controls.Add((Control)passagePanel);
-      Controls.Add((Control)messagePanel);
-      Controls.Add((Control)songPanel);
-      Controls.Add((Control)typeLookup);
-      Name = "SlideControl";
-      Size = new Size(598, 144);
-      Click += new EventHandler(SlideControl_Click);
-      typeLookup.Properties.EndInit();
-      songPanel.ResumeLayout(false);
-      songPanel.PerformLayout();
-      //verseCheckList.EndInit();
-      songLookup.Properties.EndInit();
-      bookLookup.Properties.EndInit();
-      messagePanel.ResumeLayout(false);
-      messagePanel.PerformLayout();
-      messageLookup.Properties.EndInit();
-      messageTypeLookup.Properties.EndInit();
-      passagePanel.ResumeLayout(false);
-      passagePanel.PerformLayout();
-      ResumeLayout(false);
+      this.typeLookup = new DevExpress.XtraEditors.LookUpEdit();
+      this.songPanel = new System.Windows.Forms.Panel();
+      this.openButton = new System.Windows.Forms.Button();
+      this.label3 = new System.Windows.Forms.Label();
+      this.label2 = new System.Windows.Forms.Label();
+      this.label1 = new System.Windows.Forms.Label();
+      this.verseCheckList = new DevExpress.XtraEditors.CheckedListBoxControl();
+      this.songLookup = new DevExpress.XtraEditors.LookUpEdit();
+      this.bookLookup = new DevExpress.XtraEditors.LookUpEdit();
+      this.messagePanel = new System.Windows.Forms.Panel();
+      this.label5 = new System.Windows.Forms.Label();
+      this.label4 = new System.Windows.Forms.Label();
+      this.messageLookup = new DevExpress.XtraEditors.LookUpEdit();
+      this.messageTypeLookup = new DevExpress.XtraEditors.LookUpEdit();
+      this.passagePanel = new System.Windows.Forms.Panel();
+      this.passageTextBox = new System.Windows.Forms.TextBox();
+      this.label7 = new System.Windows.Forms.Label();
+      this.panel1 = new System.Windows.Forms.Panel();
+      this.filePanel = new System.Windows.Forms.Panel();
+      this.browseButton = new System.Windows.Forms.Button();
+      this.fileTextBox = new System.Windows.Forms.TextBox();
+      this.label6 = new System.Windows.Forms.Label();
+      ((System.ComponentModel.ISupportInitialize)(this.typeLookup.Properties)).BeginInit();
+      this.songPanel.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.verseCheckList)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.songLookup.Properties)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bookLookup.Properties)).BeginInit();
+      this.messagePanel.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.messageLookup.Properties)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.messageTypeLookup.Properties)).BeginInit();
+      this.passagePanel.SuspendLayout();
+      this.filePanel.SuspendLayout();
+      this.SuspendLayout();
+      // 
+      // typeLookup
+      // 
+      this.typeLookup.Location = new System.Drawing.Point(3, 6);
+      this.typeLookup.Name = "typeLookup";
+      // 
+      // 
+      // 
+      this.typeLookup.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+      this.typeLookup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+      this.typeLookup.Properties.DropDownRows = 5;
+      this.typeLookup.Properties.NullText = "";
+      this.typeLookup.Properties.ShowFooter = false;
+      this.typeLookup.Properties.ShowHeader = false;
+      this.typeLookup.Properties.ShowLines = false;
+      this.typeLookup.Properties.ThrowExceptionOnInvalidLookUpEditValueType = true;
+      this.typeLookup.TabIndex = 0;
+      this.typeLookup.EditValueChanged += new System.EventHandler(this.typeLookup_EditValueChanged);
+      // 
+      // songPanel
+      // 
+      this.songPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.songPanel.Controls.Add(this.openButton);
+      this.songPanel.Controls.Add(this.label3);
+      this.songPanel.Controls.Add(this.label2);
+      this.songPanel.Controls.Add(this.label1);
+      this.songPanel.Controls.Add(this.verseCheckList);
+      this.songPanel.Controls.Add(this.songLookup);
+      this.songPanel.Controls.Add(this.bookLookup);
+      this.songPanel.Location = new System.Drawing.Point(105, 1);
+      this.songPanel.Name = "songPanel";
+      this.songPanel.Size = new System.Drawing.Size(490, 48);
+      this.songPanel.TabIndex = 2;
+      // 
+      // openButton
+      // 
+      this.openButton.Location = new System.Drawing.Point(127, 24);
+      this.openButton.Name = "openButton";
+      this.openButton.Size = new System.Drawing.Size(46, 21);
+      this.openButton.TabIndex = 11;
+      this.openButton.Text = "Open";
+      this.openButton.UseVisualStyleBackColor = true;
+      this.openButton.Click += new System.EventHandler(this.openButton_Click);
+      // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Location = new System.Drawing.Point(7, 28);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(32, 13);
+      this.label3.TabIndex = 10;
+      this.label3.Text = "Song";
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(7, 6);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(32, 13);
+      this.label2.TabIndex = 9;
+      this.label2.Text = "Book";
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(179, 6);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(39, 13);
+      this.label1.TabIndex = 8;
+      this.label1.Text = "Verses";
+      // 
+      // verseCheckList
+      // 
+      this.verseCheckList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.verseCheckList.CheckOnClick = true;
+      this.verseCheckList.ColumnWidth = 35;
+      this.verseCheckList.Location = new System.Drawing.Point(224, 4);
+      this.verseCheckList.MultiColumn = true;
+      this.verseCheckList.Name = "verseCheckList";
+      this.verseCheckList.SelectionMode = System.Windows.Forms.SelectionMode.None;
+      this.verseCheckList.Size = new System.Drawing.Size(255, 41);
+      this.verseCheckList.TabIndex = 7;
+      this.verseCheckList.ItemCheck += new DevExpress.XtraEditors.Controls.ItemCheckEventHandler(this.verseCheckList_ItemCheck);
+      this.verseCheckList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.verseCheckList_KeyPress);
+      // 
+      // songLookup
+      // 
+      this.songLookup.Location = new System.Drawing.Point(44, 25);
+      this.songLookup.Name = "songLookup";
+      // 
+      // 
+      // 
+      this.songLookup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+      this.songLookup.Properties.NullText = "";
+      this.songLookup.Size = new System.Drawing.Size(68, 20);
+      this.songLookup.TabIndex = 6;
+      this.songLookup.EditValueChanged += new System.EventHandler(this.songLookup_EditValueChanged);
+      // 
+      // bookLookup
+      // 
+      this.bookLookup.Location = new System.Drawing.Point(44, 3);
+      this.bookLookup.Name = "bookLookup";
+      // 
+      // 
+      // 
+      this.bookLookup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+      this.bookLookup.Size = new System.Drawing.Size(129, 20);
+      this.bookLookup.TabIndex = 5;
+      this.bookLookup.EditValueChanged += new System.EventHandler(this.bookLookup_EditValueChanged);
+      // 
+      // messagePanel
+      // 
+      this.messagePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.messagePanel.Controls.Add(this.label5);
+      this.messagePanel.Controls.Add(this.label4);
+      this.messagePanel.Controls.Add(this.messageLookup);
+      this.messagePanel.Controls.Add(this.messageTypeLookup);
+      this.messagePanel.Location = new System.Drawing.Point(105, 55);
+      this.messagePanel.Name = "messagePanel";
+      this.messagePanel.Size = new System.Drawing.Size(490, 30);
+      this.messagePanel.TabIndex = 3;
+      // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(148, 8);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(50, 13);
+      this.label5.TabIndex = 12;
+      this.label5.Text = "Message";
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(7, 8);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(31, 13);
+      this.label4.TabIndex = 11;
+      this.label4.Text = "Type";
+      // 
+      // messageLookup
+      // 
+      this.messageLookup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.messageLookup.Location = new System.Drawing.Point(204, 5);
+      this.messageLookup.Name = "messageLookup";
+      // 
+      // 
+      // 
+      this.messageLookup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+      this.messageLookup.Properties.DropDownRows = 15;
+      this.messageLookup.Properties.NullText = "";
+      this.messageLookup.Properties.PopupWidth = 400;
+      this.messageLookup.Size = new System.Drawing.Size(275, 20);
+      this.messageLookup.TabIndex = 10;
+      // 
+      // messageTypeLookup
+      // 
+      this.messageTypeLookup.Location = new System.Drawing.Point(44, 5);
+      this.messageTypeLookup.Name = "messageTypeLookup";
+      // 
+      // 
+      // 
+      this.messageTypeLookup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+      this.messageTypeLookup.Size = new System.Drawing.Size(98, 20);
+      this.messageTypeLookup.TabIndex = 9;
+      this.messageTypeLookup.EditValueChanged += new System.EventHandler(this.messageTypeLookup_EditValueChanged);
+      // 
+      // passagePanel
+      // 
+      this.passagePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.passagePanel.Controls.Add(this.passageTextBox);
+      this.passagePanel.Controls.Add(this.label7);
+      this.passagePanel.Location = new System.Drawing.Point(105, 91);
+      this.passagePanel.Name = "passagePanel";
+      this.passagePanel.Size = new System.Drawing.Size(490, 30);
+      this.passagePanel.TabIndex = 14;
+      // 
+      // passageTextBox
+      // 
+      this.passageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.passageTextBox.Location = new System.Drawing.Point(57, 5);
+      this.passageTextBox.Name = "passageTextBox";
+      this.passageTextBox.Size = new System.Drawing.Size(422, 20);
+      this.passageTextBox.TabIndex = 12;
+      // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(3, 8);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(48, 13);
+      this.label7.TabIndex = 11;
+      this.label7.Text = "Passage";
+      // 
+      // panel1
+      // 
+      this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+      this.panel1.Location = new System.Drawing.Point(0, 156);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(598, 1);
+      this.panel1.TabIndex = 15;
+      // 
+      // filePanel
+      // 
+      this.filePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.filePanel.Controls.Add(this.browseButton);
+      this.filePanel.Controls.Add(this.fileTextBox);
+      this.filePanel.Controls.Add(this.label6);
+      this.filePanel.Location = new System.Drawing.Point(105, 123);
+      this.filePanel.Name = "filePanel";
+      this.filePanel.Size = new System.Drawing.Size(490, 30);
+      this.filePanel.TabIndex = 16;
+      // 
+      // browseButton
+      // 
+      this.browseButton.Location = new System.Drawing.Point(323, 5);
+      this.browseButton.Name = "browseButton";
+      this.browseButton.Size = new System.Drawing.Size(60, 21);
+      this.browseButton.TabIndex = 13;
+      this.browseButton.Text = "Browse";
+      this.browseButton.UseVisualStyleBackColor = true;
+      this.browseButton.Click += new System.EventHandler(this.browseButton_Click);
+      // 
+      // fileTextBox
+      // 
+      this.fileTextBox.Location = new System.Drawing.Point(57, 5);
+      this.fileTextBox.Name = "fileTextBox";
+      this.fileTextBox.ReadOnly = true;
+      this.fileTextBox.Size = new System.Drawing.Size(260, 20);
+      this.fileTextBox.TabIndex = 12;
+      // 
+      // label6
+      // 
+      this.label6.AutoSize = true;
+      this.label6.Location = new System.Drawing.Point(3, 8);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(54, 13);
+      this.label6.TabIndex = 11;
+      this.label6.Text = "File Name";
+      // 
+      // SlideControl
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Control;
+      this.Controls.Add(this.filePanel);
+      this.Controls.Add(this.panel1);
+      this.Controls.Add(this.passagePanel);
+      this.Controls.Add(this.messagePanel);
+      this.Controls.Add(this.songPanel);
+      this.Controls.Add(this.typeLookup);
+      this.Name = "SlideControl";
+      this.Size = new System.Drawing.Size(598, 157);
+      this.Click += new System.EventHandler(this.SlideControl_Click);
+      ((System.ComponentModel.ISupportInitialize)(this.typeLookup.Properties)).EndInit();
+      this.songPanel.ResumeLayout(false);
+      this.songPanel.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.verseCheckList)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.songLookup.Properties)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bookLookup.Properties)).EndInit();
+      this.messagePanel.ResumeLayout(false);
+      this.messagePanel.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.messageLookup.Properties)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.messageTypeLookup.Properties)).EndInit();
+      this.passagePanel.ResumeLayout(false);
+      this.passagePanel.PerformLayout();
+      this.filePanel.ResumeLayout(false);
+      this.filePanel.PerformLayout();
+      this.ResumeLayout(false);
+
     }
 
     public delegate void ChangedEventHandler(object sender, EventArgs e);
+
+
+
   }
 }

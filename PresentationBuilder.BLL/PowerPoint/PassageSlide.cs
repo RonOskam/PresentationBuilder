@@ -9,22 +9,23 @@ namespace PresentationBuilder.BLL.PowerPoint
 
     public PassageSlide(string verses)
     {
-      this._verses = verses;
+      _verses = verses;
     }
 
     internal override void Generate(Presentation presentation)
     {
-      this.AddMainTextbox(this.GenerateSlide(presentation), new PassageReader().GetBiblePassage(this._verses), MessageSlide.MessageFont);
+      AddMainTextbox(GenerateSlide(presentation), new PassageReader().GetBiblePassage(_verses), MessageSlide.MessageFont);
     }
 
     public override string Validate()
     {
-      PassageReader passageReader = new PassageReader();
-      if (string.IsNullOrEmpty(this._verses))
+      var passageReader = new PassageReader();
+      if (string.IsNullOrEmpty(_verses))
         return "A passage must be entered.";
-      if (!passageReader.IsPassageValid(this._verses))
-        return this._verses + " is not a valid passage";
-      return base.Validate();
+      else if (!passageReader.IsPassageValid(_verses))
+        return _verses + " is not a valid passage";
+      else
+        return base.Validate();
     }
   }
 }

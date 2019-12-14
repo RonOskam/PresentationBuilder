@@ -21,7 +21,7 @@ namespace PresentationBuilder.BLL.PowerPoint
 
     internal override void Generate(Presentation presentation)
     {
-      if (_fileName.StartsWith("http"))
+      if (_fileName.StartsWith(@"\\"))
       {
         var newFile = $"{ Path.GetTempPath() }TempPowerPoint.pptx";
         if (File.Exists(newFile))
@@ -31,7 +31,15 @@ namespace PresentationBuilder.BLL.PowerPoint
 
         _fileName = newFile;
       }
-      presentation.Slides.InsertFromFile(_fileName, presentation.Slides.Count);
+
+      try
+      {
+        presentation.Slides.InsertFromFile(_fileName, presentation.Slides.Count);
+      }
+      catch (Exception e)
+      {
+        throw new Exception($"Error inserting file { _fileName }: { e.Message }");
+      }
     }
 
     public override string Validate()

@@ -20,7 +20,10 @@ namespace PresentationBuilder.BLL
     {
       //Assuming the PBData file is in the users MyDocuments folder
       var file = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\PBData.sqlite";
-      Database.Connection.ConnectionString = $"data source={ file };DateTimeFormat=InvariantCulture;foreign keys=true";
+      if (!System.IO.File.Exists(file))
+        throw new Exception($"Data file not found: { file }");
+      else
+        Database.Connection.ConnectionString = $"data source={ file };DateTimeFormat=InvariantCulture;foreign keys=true";
     }
 
     protected override void OnModelCreating(DbModelBuilder modelBuilder)

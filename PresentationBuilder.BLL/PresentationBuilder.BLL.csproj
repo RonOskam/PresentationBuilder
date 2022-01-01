@@ -8,12 +8,13 @@
     <ProjectGuid>{0A51B87F-37EC-4E6B-A544-9EC4A500DFCF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>PresentationBuilder.BLL</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>PresentationBuilder.BLL</RootNamespace>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,6 +45,9 @@
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -85,7 +89,6 @@
     <Compile Include="MessageType.cs">
       <DependentUpon>PresentationBuilderEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="OneDriveReader.cs" />
     <Compile Include="PassageReader.cs" />
     <Compile Include="DataSource.cs" />
     <Compile Include="CyberhymnalReader.cs" />

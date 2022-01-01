@@ -751,6 +751,7 @@ namespace PresentationBuilder.Win.Controls
       this.fileTextBox.ReadOnly = true;
       this.fileTextBox.Size = new System.Drawing.Size(260, 20);
       this.fileTextBox.TabIndex = 12;
+      this.fileTextBox.TabStop = false;
       // 
       // label6
       // 

@@ -14,7 +14,10 @@ namespace PresentationBuilder.BLL.PowerPoint
 
     internal override void Generate(Presentation presentation)
     {
-      AddMainTextbox(GenerateSlide(presentation), new PassageReader().GetBiblePassage(_verses), MessageSlide.MessageFont);
+      string passage = new PassageReader().GetBiblePassage(_verses);
+
+      passage += $"\r\n\r\n{ _verses }";
+      AddMainTextbox(GenerateSlide(presentation), passage, MessageSlide.MessageFont);
     }
 
     public override string Validate()
